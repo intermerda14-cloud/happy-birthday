@@ -7,19 +7,61 @@ interface Props {
 
 export function PlaceholderPage({ no, title }: Props) {
   return (
-    <div className="paper" style={{ padding: "2rem 1rem", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between" }}>
+    <div
+      className="paper"
+      style={{
+        padding: "2rem 1.5rem",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "space-between",
+        borderRadius: "2px",
+      }}
+    >
       <div>
-        <span style={{ color: "var(--bronze)", fontStyle: "italic", fontSize: "0.85rem" }}>
+        <span
+          style={{
+            color: "var(--bronze)",
+            fontStyle: "italic",
+            fontSize: "0.85rem",
+            letterSpacing: "0.05em",
+          }}
+        >
           Bab {no}
         </span>
-        <h2 style={{ fontFamily: "var(--serif)", color: "var(--ink)", marginTop: "0.4rem" }}>
+        <h2
+          style={{
+            fontFamily: "var(--serif)",
+            color: "var(--ink)",
+            fontSize: "1.6rem",
+            margin: "0.5rem 0 1rem",
+            fontWeight: 600,
+          }}
+        >
           {title}
         </h2>
-        <p style={{ color: "var(--ink)", lineHeight: 1.7, opacity: 0.85, marginTop: "1rem" }}>
-          Isi bab ini sedang dirajut dengan kata-kata, foto, dan kenangan. Halaman ini sudah bisa kamu balik di HP.
+        <p
+          style={{
+            color: "var(--ink)",
+            lineHeight: 1.75,
+            fontSize: "0.95rem",
+            margin: 0,
+            opacity: 0.9,
+          }}
+        >
+          Isi bab ini sedang dirajut dengan kata-kata, foto, dan kenangan. Di
+          Fase 1 nanti, halaman ini akan digantikan konten interaktif lengkap
+          (lilin tiup, surat cinta, album polaroid, dan lagu Spotify).
         </p>
       </div>
-      <div style={{ textAlign: "center", color: "var(--bronze)", fontStyle: "italic", fontSize: "0.85rem" }}>
+      <div
+        style={{
+          textAlign: "center",
+          color: "var(--bronze)",
+          fontStyle: "italic",
+          fontSize: "0.85rem",
+          marginTop: "2rem",
+        }}
+      >
         ~ folio {no} ~
       </div>
     </div>
