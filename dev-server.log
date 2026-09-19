@@ -19,3 +19,58 @@
 ✓ Compiled in 88ms
  GET / 200 in 91ms (next.js: 19ms, application-code: 72ms)
  GET / 200 in 109ms (next.js: 26ms, application-code: 83ms)
+ GET / 200 in 106ms (next.js: 19ms, application-code: 88ms)
+ GET / 200 in 141ms (next.js: 12ms, application-code: 129ms)
+ GET / 200 in 99ms (next.js: 9ms, application-code: 90ms)
+ GET / 200 in 82ms (next.js: 6ms, application-code: 76ms)
+⚠ Blocked cross-origin request to Next.js dev resource /_next/hmr from "192.168.100.22".
+Cross-origin access to Next.js dev resources is blocked by default for safety.
+
+To allow this host in development, add it to "allowedDevOrigins" in next.config.js and restart the dev server:
+
+// next.config.js
+module.exports = {
+  allowedDevOrigins: ['192.168.100.22'],
+}
+
+Read more: https://nextjs.org/docs/app/api-reference/config/next-config-js/allowedDevOrigins
+ GET / 200 in 83ms (next.js: 5ms, application-code: 78ms)
+ GET / 200 in 76ms (next.js: 4ms, application-code: 72ms)
+ GET / 200 in 53ms (next.js: 10ms, application-code: 43ms)
+✓ Compiled in 109ms
+ GET / 200 in 116ms (next.js: 16ms, application-code: 100ms)
+[browser] The final argument passed to useEffect changed size between renders. The order and size of this array must remain constant.
+
+Previous: [[object Object]]
+Incoming: [, ] 
+    at BookProvider (components/BookProvider.tsx:95:12)
+  93 |   }, []);
+  94 |
+> 95 |   useEffect(() => {
+     |            ^
+  96 |     if (!mounted.current) return;
+  97 |     try {
+  98 |       localStorage.setItem( (components/BookProvider.tsx:95:12)
+✓ Compiled in 81ms
+ GET / 200 in 69ms (next.js: 15ms, application-code: 54ms)
+✓ Compiled in 110ms
+ GET / 200 in 79ms (next.js: 16ms, application-code: 62ms)
+✓ Compiled in 68ms
+✓ Compiled in 79ms
+✓ Compiled in 67ms
+✓ Compiled in 199ms
+ GET / 200 in 68ms (next.js: 14ms, application-code: 54ms)
+[browser] Uncaught TypeError: can't access property "coupon1", state.couponsTorn is undefined
+    at CouponsScene/<.children<.children<.children< (components/pages/CouponsScene.tsx:58:69)
+    at CouponsScene (components/pages/CouponsScene.tsx:57:25)
+    at BookContent (components/Book.tsx:40:7)
+    at Book (components/Book.tsx:26:7)
+    at Home (app\page.tsx:15:7)
+  56 |         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+  57 |           {cleanCoupons.map((coupon, i) => {
+> 58 |             const isTorn = state.couponsTorn[coupon.id || `coupon-${i}`];
+     |                                                                     ^
+  59 |
+  60 |             return (
+  61 |               <div
+ GET / 200 in 83ms (next.js: 10ms, application-code: 73ms)
