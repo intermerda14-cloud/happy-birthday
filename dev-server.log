@@ -1,0 +1,10 @@
+
+> kisah-adelia@0.1.0 dev
+> next dev --hostname 0.0.0.0
+
+▲ Next.js 16.3.5 (Turbopack)
+- Local:         http://localhost:3000
+- Network:       http://0.0.0.0:3000
+✓ Ready in 1176ms
+✓ Running next.config.ts took 93ms
+

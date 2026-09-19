@@ -1,0 +1,251 @@
+@import "tailwindcss";
+
+:root {
+  --night: #2a1230;
+  --champagne: #e9cfa0;
+  --gold: #c9a25e;
+  --bronze: #8a5a2b;
+  --paper: #f7ead9;
+  --ink: #3a1d3f;
+  --rose: #d9a0b0;
+  --mint: #c9e6d8;
+
+  --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --sans: var(--font-nunito), system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+@theme inline {
+  --font-serif: var(--font-fraunces), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-nunito), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --color-night: var(--night);
+  --color-champagne: var(--champagne);
+  --color-gold: var(--gold);
+  --color-bronze: var(--bronze);
+  --color-paper: var(--paper);
+  --color-ink: var(--ink);
+  --color-rose: var(--rose);
+  --color-mint: var(--mint);
+}
+
+html {
+  scroll-padding-top: env(safe-area-inset-top, 0px);
+}
+
+body {
+  margin: 0;
+  height: 100%;
+  background: radial-gradient(100% 80% at 50% 40%, #3b1d45, #160a1c);
+  font-family: var(--sans);
+  color: var(--ink);
+  overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  padding-top: env(safe-area-inset-top, 0px);
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+button {
+  font: inherit;
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
+/* ============ BUKU & Halaman ============ */
+.book {
+  position: relative;
+  height: 100vh;
+  height: 100dvh;
+  max-width: 460px;
+  margin: 0 auto;
+  perspective: 1800px;
+  overflow: hidden;
+  background: var(--night);
+  box-shadow: 0 0 70px rgba(0, 0, 0, 0.55);
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  transform-origin: left center;
+  transition:
+    transform 1.3s var(--ease),
+    opacity 1.3s var(--ease);
+}
+
+.page.turned {
+  transform: rotateY(-160deg);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.inner {
+  position: absolute;
+  inset: 0;
+  overflow-y: auto;
+  padding: 58px 34px 84px;
+  overscroll-behavior: contain;
+}
+
+/* ============ Kertas perkamen ============ */
+.paper {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E"),
+    radial-gradient(42% 30% at 10% 7%, rgba(217, 160, 176, 0.32), transparent 70%),
+    radial-gradient(40% 30% at 94% 95%, rgba(201, 230, 216, 0.6), transparent 70%),
+    radial-gradient(32% 22% at 92% 9%, rgba(233, 207, 160, 0.45), transparent 70%),
+    radial-gradient(120% 90% at 50% 35%, #fff9f0 0%, var(--paper) 62%, #e6cfb2 100%);
+}
+
+.paper::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 26px;
+  background: linear-gradient(90deg, rgba(90, 50, 30, 0.22), transparent);
+  z-index: 1;
+  pointer-events: none;
+}
+
+/* ============ Bingkai & ornamen sudut ============ */
+.frame {
+  position: absolute;
+  inset: 14px;
+  border: 1px solid rgba(185, 139, 74, 0.65);
+  pointer-events: none;
+}
+
+.frame::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border: 1px solid rgba(185, 139, 74, 0.35);
+}
+
+.crn {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  color: #b98b4a;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.crn.tl { top: 16px; left: 16px; }
+.crn.tr { top: 16px; right: 16px; transform: scaleX(-1); }
+.crn.bl { bottom: 16px; left: 16px; transform: scaleY(-1); }
+.crn.br { bottom: 16px; right: 16px; transform: scale(-1); }
+
+/* ============ Teks & tombol umum ============ */
+.folio {
+  position: absolute;
+  bottom: 26px;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font: italic 0.85rem var(--serif);
+  color: var(--bronze);
+  z-index: 2;
+  pointer-events: none;
+}
+
+.foil {
+  background: linear-gradient(
+    100deg,
+    #b98b4a 0%,
+    #f3e0b0 35%,
+    #c9a25e 55%,
+    #f1dba8 75%,
+    #b98b4a 100%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: sweep 3.2s var(--ease) 0.4s both;
+}
+
+@keyframes sweep {
+  from { background-position: 100% 0; }
+  to { background-position: 0 0; }
+}
+
+.btn {
+  background: var(--ink);
+  color: #faf3ec;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  padding: 0.8rem 1.6rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.btn:disabled {
+  background: var(--mint);
+  color: var(--ink);
+  border-color: transparent;
+  cursor: default;
+}
+
+.center {
+  text-align: center;
+}
+
+/* ============ Navigasi bawah (Balik / Kembali) ============ */
+.navbar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 52px;
+  z-index: 20;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  pointer-events: none;
+}
+
+.navbar > * {
+  pointer-events: auto;
+}
+
+.nav-btn {
+  background: var(--ink);
+  color: #faf3ec;
+  border: 1px solid var(--gold);
+  border-radius: 2px;
+  padding: 0.55rem 1.1rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  opacity: 0.92;
+}
+
+.nav-btn:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+/* ============ Kontrol sentuh: cegah scroll saat memanggang halaman ============ */
+.page-zone {
+  position: absolute;
+  inset: 0;
+}
+
+/* ============ Reduced motion ============ */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+  }
+}
