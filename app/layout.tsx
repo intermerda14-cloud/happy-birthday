@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Fraunces, Nunito } from "next/font/google";
 import "./globals.css";
+import "./upgrade.css";
 
 const fraunces = Fraunces({
   subsets: ["latin"],
@@ -15,6 +16,13 @@ const nunito = Nunito({
   weight: ["400", "600", "700"],
   display: "swap",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#2A1230",
+};
 
 export const metadata: Metadata = {
   title: "Kisah Adelia — sebuah dongeng untuk hari ulang tahunmu",

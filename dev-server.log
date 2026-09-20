@@ -124,3 +124,75 @@ Incoming: [, ]
  GET / 200 in 201ms (next.js: 5ms, application-code: 196ms)
  GET / 200 in 400ms (next.js: 17ms, application-code: 383ms)
  GET / 200 in 324ms (next.js: 34ms, application-code: 290ms)
+ GET / 200 in 132ms (next.js: 8ms, application-code: 124ms)
+ GET / 200 in 109ms (next.js: 8ms, application-code: 101ms)
+ GET / 200 in 86ms (next.js: 5ms, application-code: 81ms)
+ GET / 200 in 119ms (next.js: 6ms, application-code: 112ms)
+ GET / 200 in 142ms (next.js: 6ms, application-code: 136ms)
+ GET / 200 in 1087ms (next.js: 441ms, application-code: 646ms)
+✓ Compiled in 354ms
+ GET / 200 in 180ms (next.js: 34ms, application-code: 146ms)
+✓ Compiled in 551ms
+ GET / 200 in 372ms (next.js: 24ms, application-code: 348ms)
+[browser] A tree hydrated but some attributes of the server rendered HTML didn't match the client properties. This won't be patched up. This can happen if a SSR-ed Client Component used:
+
+- A server/client branch `if (typeof window !== 'undefined')`.
+- Variable input such as `Date.now()` or `Math.random()` which changes each time it's called.
+- Date formatting in a user's locale which doesn't match the server.
+- External changing data without sending a snapshot of it along with the HTML.
+- Invalid HTML tag nesting.
+
+It can also happen if the client has a browser extension installed which messes with the HTML before React loaded.
+
+https://react.dev/link/hydration-mismatch
+
+  ...
+    <SegmentViewNode type="page" pagePath="page.tsx">
+      <SegmentTrieNode>
+      <Home>
+        <main style={{height:"10...", ...}}>
+          <Book>
+            <BookProvider>
+              <BookContent>
+                <SoundToggle>
+                <PageTurner index={0} onChange={function handleChange} canAdvance={function canAdvance}>
+                  <div ref={{current:null}} className="book-wrapp..." tabIndex={0} onKeyDown={function onKeyDown} ...>
+                    <LuxDefs>
+                    <div>
+                    <div className="bk-deck">
+                      <div ref={function ref} className="bk-page cu..." style={{zIndex:10, ...}} aria-hidden={false}>
+                        <div className="bk-inner">
+                          <Cover isUnlocked={false} onOpen={function handleOpen}>
+                            <div className="lux-cover ...">
+                              <svg>
+                              <div>
+                              <div>
+                              <div className="lux-cover-...">
+                                <h1>
+                                <p>
+                                <button
+                                  type="button"
+                                  className="lux-seal idle"
++                                 disabled={true}
+-                                 disabled={null}
+                                  aria-label="Tahan untuk memecahkan segel"
+                                  onPointerDown={function startHold}
+                                  onPointerUp={function endHold}
+                                  onPointerCancel={function endHold}
+                                  onClick={function onSealClick}
+                                  onContextMenu={function onContextMenu}
+                                >
+                        ...
+                      ...
+                    ...
+    ...
+ 
+ GET / 200 in 267ms (next.js: 18ms, application-code: 249ms)
+ GET / 200 in 309ms (next.js: 14ms, application-code: 295ms)
+ GET / 200 in 278ms (next.js: 11ms, application-code: 267ms)
+ GET / 200 in 358ms (next.js: 15ms, application-code: 343ms)
+ GET / 200 in 311ms (next.js: 23ms, application-code: 288ms)
+ GET / 200 in 304ms (next.js: 11ms, application-code: 293ms)
+ GET / 200 in 85ms (next.js: 7ms, application-code: 79ms)
+ GET / 200 in 216ms (next.js: 8ms, application-code: 208ms)
+ GET / 200 in 202ms (next.js: 9ms, application-code: 192ms)

@@ -12,7 +12,7 @@ import { StarsScene } from "./pages/StarsScene";
 import { JarScene } from "./pages/JarScene";
 import { EpilogueScene } from "./pages/EpilogueScene";
 import { SoundToggle } from "./audio/SoundToggle";
-import { sounds } from "./audio/SoundEngine";
+import { sfx } from "@/lib/sfx";
 
 function BookContent() {
   const { state, dispatch } = useBook();
@@ -24,13 +24,12 @@ function BookContent() {
   };
 
   const handleOpen = () => {
-    sounds.playWaxCrack();
-    sounds.startAmbient();
+    sfx("playWaxCrack");
+    sfx("startAmbient");
     dispatch({ type: "OPEN" });
   };
 
   const handleChange = (i: number) => {
-    sounds.playPageTurn();
     dispatch({ type: "TURN", to: i });
   };
 
@@ -49,7 +48,6 @@ function BookContent() {
         <CandleScene
           blown={state.candleBlown}
           onBlow={() => {
-            sounds.playBlow();
             dispatch({ type: "BLOW_CANDLE" });
           }}
         />
