@@ -122,3 +122,5 @@ Incoming: [, ]
  GET / 200 in 171ms (next.js: 7ms, application-code: 164ms)
  GET / 200 in 195ms (next.js: 12ms, application-code: 183ms)
  GET / 200 in 201ms (next.js: 5ms, application-code: 196ms)
+ GET / 200 in 400ms (next.js: 17ms, application-code: 383ms)
+ GET / 200 in 324ms (next.js: 34ms, application-code: 290ms)

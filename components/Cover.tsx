@@ -13,7 +13,15 @@ export function Cover({ isUnlocked, onOpen }: Props) {
   const [sealBroken, setSealBroken] = useState(false);
 
   useEffect(() => {
-    const targetStr = site.birthdayISO.startsWith("TODO") ? "2026-09-20" : site.birthdayISO;
+    // Cek target tanggal ulang tahun
+    const targetStr = site.birthdayISO && !site.birthdayISO.startsWith("TODO") ? site.birthdayISO : null;
+
+    if (!targetStr) {
+      // Jika belum diisi, jangan kunci buku agar bisa ditest/dilihat
+      setTimeLeft(null);
+      return;
+    }
+
     const targetTime = new Date(`${targetStr}T00:00:00+07:00`).getTime();
 
     const updateTimer = () => {
@@ -36,11 +44,16 @@ export function Cover({ isUnlocked, onOpen }: Props) {
   }, []);
 
   const handleSealClick = () => {
-    if (!isUnlocked && timeLeft !== null) return;
     setSealBroken(true);
   };
 
-  const recipientName = site.recipientName.startsWith("TODO") ? "Adelia" : site.recipientName;
+  const handleOpenClick = (e: React.MouseEvent | React.TouchEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onOpen();
+  };
+
+  const recipientName = site.recipientName && !site.recipientName.startsWith("TODO") ? site.recipientName : "Adelia";
 
   return (
     <div
@@ -51,7 +64,7 @@ export function Cover({ isUnlocked, onOpen }: Props) {
         alignItems: "center",
         justifyContent: "space-between",
         textAlign: "center",
-        padding: "2.8rem 1.6rem 2.2rem",
+        padding: "2.5rem 1.4rem 2rem",
         height: "100%",
         position: "relative",
       }}
@@ -98,7 +111,7 @@ export function Cover({ isUnlocked, onOpen }: Props) {
         </p>
       </div>
 
-      {/* Segel Lilin di Tengah dengan Efek 3D Realistis */}
+      {/* Segel Lilin di Tengah */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "1rem", position: "relative", zIndex: 12 }}>
         <button
           type="button"
@@ -107,11 +120,12 @@ export function Cover({ isUnlocked, onOpen }: Props) {
           style={{
             background: "none",
             border: "none",
-            cursor: isUnlocked || timeLeft === null ? "pointer" : "not-allowed",
+            cursor: "pointer",
             padding: 0,
             outline: "none",
             position: "relative",
             transition: "transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1)",
+            touchAction: "manipulation",
           }}
           onMouseDown={(e) => (e.currentTarget.style.transform = "scale(0.93)")}
           onMouseUp={(e) => (e.currentTarget.style.transform = "scale(1)")}
@@ -150,7 +164,7 @@ export function Cover({ isUnlocked, onOpen }: Props) {
           </div>
         </button>
 
-        {/* Status Kunci / Hitung Mundur */}
+        {/* Status Kunci jika target tanggal ulang tahun diaktifkan */}
         {!isUnlocked && timeLeft !== null ? (
           <div style={{ background: "rgba(20, 6, 26, 0.75)", padding: "0.7rem 1.3rem", borderRadius: "8px", border: "1px solid rgba(201, 162, 94, 0.35)", backdropFilter: "blur(6px)" }}>
             <p style={{ color: "var(--champagne)", fontSize: "0.8rem", margin: "0 0 0.3rem", fontStyle: "italic" }}>
@@ -163,23 +177,26 @@ export function Cover({ isUnlocked, onOpen }: Props) {
           </div>
         ) : (
           <p style={{ color: "var(--champagne)", fontSize: "0.85rem", fontStyle: "italic", margin: 0, opacity: 0.9 }}>
-            {sealBroken ? "Segel lilin telah pecah..." : "Ketuk segel untuk memecahkannya"}
+            {sealBroken ? "Segel lilin telah pecah ✦" : "Ketuk segel atau tombol di bawah"}
           </p>
         )}
       </div>
 
-      {/* Tombol Buka Buku */}
-      <div style={{ width: "100%", position: "relative", zIndex: 12 }}>
+      {/* Tombol Buka Buku - Click & Touch Friendly di Android/iOS */}
+      <div style={{ width: "100%", position: "relative", zIndex: 100 }}>
         <button
           type="button"
           className="btn"
-          onClick={onOpen}
-          disabled={!isUnlocked && timeLeft !== null && !sealBroken}
+          onClick={handleOpenClick}
+          onTouchEnd={handleOpenClick}
           style={{
             width: "100%",
-            maxWidth: "250px",
-            fontSize: "1rem",
-            padding: "0.9rem 1.6rem",
+            maxWidth: "260px",
+            fontSize: "1.05rem",
+            padding: "0.95rem 1.6rem",
+            cursor: "pointer",
+            touchAction: "manipulation",
+            pointerEvents: "auto",
           }}
         >
           Buka Buku ✦
