@@ -1,12 +1,24 @@
 "use client";
 import { useState } from "react";
 import { album } from "@/content/album";
+import { sounds } from "@/components/audio/SoundEngine";
 
 export function AlbumScene() {
   const [developed, setDeveloped] = useState<Record<number, boolean>>({});
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
-  const toggleDevelop = (idx: number) => {
+  const toggleDevelop = (idx: number, e: React.MouseEvent) => {
+    e.stopPropagation();
+    sounds.playPageTurn();
     setDeveloped((prev) => ({ ...prev, [idx]: !prev[idx] }));
+  };
+
+  const openLightbox = (idx: number) => {
+    setLightboxIndex(idx);
+  };
+
+  const closeLightbox = () => {
+    setLightboxIndex(null);
   };
 
   const spreads = album.spreads || [];
@@ -22,6 +34,7 @@ export function AlbumScene() {
         justifyContent: "space-between",
         height: "100%",
         overflowY: "auto",
+        position: "relative",
       }}
     >
       <div>
@@ -30,7 +43,7 @@ export function AlbumScene() {
             Bab III · Kenangan
           </span>
           <span style={{ color: "var(--bronze)", fontSize: "0.75rem", fontStyle: "italic" }}>
-            Sentuh foto untuk mencetak
+            Ketuk foto untuk mencetak / perbesar
           </span>
         </div>
 
@@ -56,7 +69,13 @@ export function AlbumScene() {
             return (
               <div
                 key={i}
-                onClick={() => toggleDevelop(i)}
+                onClick={(e) => {
+                  if (!isDev) {
+                    toggleDevelop(i, e);
+                  } else {
+                    openLightbox(i);
+                  }
+                }}
                 style={{
                   background: "#ffffff",
                   padding: "8px 8px 12px",
@@ -67,8 +86,6 @@ export function AlbumScene() {
                   transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease",
                   position: "relative",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.transform = "rotate(0deg) scale(1.03)")}
-                onMouseLeave={(e) => (e.currentTarget.style.transform = `rotate(${rot}) scale(1)`)}
               >
                 {/* Washi tape dekoratif di atas */}
                 <div
@@ -101,7 +118,7 @@ export function AlbumScene() {
                   }}
                 >
                   <span style={{ color: isDev ? "#2c3e50" : "var(--champagne)", fontSize: "0.75rem", fontStyle: "italic" }}>
-                    {isDev ? "📸 Kenangan Terabadikan" : "✦ Ketuk untuk melihat"}
+                    {isDev ? "🔍 Ketuk untuk perbesar" : "✦ Sentuh untuk cetak"}
                   </span>
                 </div>
 
@@ -130,6 +147,72 @@ export function AlbumScene() {
           ~ setiap detik bersamamu adalah cerita ~
         </span>
       </div>
+
+      {/* Lightbox Modal */}
+      {lightboxIndex !== null && (
+        <div
+          onClick={closeLightbox}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 999,
+            background: "rgba(18, 6, 23, 0.92)",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "2rem 1.5rem",
+            backdropFilter: "blur(6px)",
+            animation: "fade 0.3s ease",
+          }}
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              background: "#fff",
+              padding: "1rem 1rem 1.5rem",
+              borderRadius: "4px",
+              maxWidth: "320px",
+              width: "100%",
+              boxShadow: "0 10px 40px rgba(0,0,0,0.8)",
+              textAlign: "center",
+            }}
+          >
+            <div
+              style={{
+                width: "100%",
+                aspectRatio: "4/5",
+                background: "linear-gradient(135deg, #e0c3fc 0%, #8ec5fc 100%)",
+                borderRadius: "2px",
+                display: "grid",
+                placeItems: "center",
+                color: "#2c3e50",
+                fontStyle: "italic",
+              }}
+            >
+              📸 Kenangan Abadi #{lightboxIndex + 1}
+            </div>
+            <p style={{ fontFamily: "var(--serif)", color: "var(--ink)", fontStyle: "italic", margin: "1rem 0 0.5rem", fontSize: "0.95rem" }}>
+              {firstSpread.photos[lightboxIndex]?.caption.replace(/^TODO:\s*/, "") || "Momen indah yang takkan terlupakan"}
+            </p>
+            <button
+              type="button"
+              onClick={closeLightbox}
+              className="btn"
+              style={{ padding: "0.4rem 1.2rem", fontSize: "0.85rem", marginTop: "0.5rem" }}
+            >
+              Tutup
+            </button>
+          </div>
+        </div>
+      )}
+
+      <style jsx>{`
+        @keyframes fade {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+      `}</style>
     </div>
   );
 }

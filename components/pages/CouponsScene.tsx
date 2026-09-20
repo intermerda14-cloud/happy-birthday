@@ -1,6 +1,7 @@
 "use client";
 import { coupons } from "@/content/coupons";
 import { useBook } from "@/components/BookProvider";
+import { sounds } from "@/components/audio/SoundEngine";
 
 export function CouponsScene() {
   const { state, dispatch } = useBook();
@@ -12,6 +13,7 @@ export function CouponsScene() {
   }));
 
   const handleTear = (id: string) => {
+    sounds.playTear();
     dispatch({ type: "TEAR_COUPON", id });
   };
 

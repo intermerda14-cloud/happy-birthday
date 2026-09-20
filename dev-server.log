@@ -74,3 +74,22 @@ Incoming: [, ]
   60 |             return (
   61 |               <div
  GET / 200 in 83ms (next.js: 10ms, application-code: 73ms)
+⚠ Fast Refresh had to perform a full reload due to a runtime error.
+✓ Compiled in 97ms
+ GET / 200 in 129ms (next.js: 15ms, application-code: 114ms)
+ GET / 200 in 462ms (next.js: 154ms, application-code: 308ms)
+ GET / 200 in 120ms (next.js: 34ms, application-code: 86ms)
+ GET / 200 in 240ms (next.js: 31ms, application-code: 209ms)
+✓ Compiled in 183ms
+✓ Compiled in 435ms
+ GET / 200 in 92ms (next.js: 31ms, application-code: 61ms)
+✓ Compiled in 92ms
+ GET / 200 in 49ms (next.js: 19ms, application-code: 30ms)
+✓ Compiled in 68ms
+ GET / 200 in 69ms (next.js: 16ms, application-code: 53ms)
+✓ Compiled in 118ms
+ GET / 200 in 76ms (next.js: 22ms, application-code: 54ms)
+✓ Compiled in 71ms
+ GET / 200 in 84ms (next.js: 21ms, application-code: 63ms)
+ GET / 200 in 109ms (next.js: 11ms, application-code: 99ms)
+ GET / 200 in 164ms (next.js: 13ms, application-code: 151ms)
