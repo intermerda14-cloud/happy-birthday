@@ -111,3 +111,14 @@ Incoming: [, ]
  GET / 200 in 70ms (next.js: 21ms, application-code: 49ms)
 ✓ Compiled in 132ms
  GET / 200 in 119ms (next.js: 31ms, application-code: 88ms)
+✓ Compiled in 132ms
+ GET / 200 in 144ms (next.js: 28ms, application-code: 117ms)
+ GET / 200 in 641ms (next.js: 28ms, application-code: 613ms)
+✓ Compiled in 83ms
+ GET / 200 in 67ms (next.js: 18ms, application-code: 49ms)
+ GET / 200 in 137ms (next.js: 6ms, application-code: 130ms)
+✓ Compiled in 302ms
+ GET / 200 in 170ms (next.js: 7ms, application-code: 164ms)
+ GET / 200 in 171ms (next.js: 7ms, application-code: 164ms)
+ GET / 200 in 195ms (next.js: 12ms, application-code: 183ms)
+ GET / 200 in 201ms (next.js: 5ms, application-code: 196ms)

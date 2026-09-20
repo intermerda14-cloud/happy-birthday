@@ -1,5 +1,5 @@
 "use client";
-import { useCallback, useRef, type ReactNode } from "react";
+import { useCallback, useRef, useState, useEffect, type ReactNode } from "react";
 
 interface Props {
   children: ReactNode[];
@@ -13,15 +13,32 @@ export function PageTurner({ children, index, onChange, canAdvance }: Props) {
   const startY = useRef<number | null>(null);
   const total = children.length;
 
+  // Track arah animasi untuk styling transisi natural
+  const [turningIndex, setTurningIndex] = useState<number | null>(null);
+  const [turnDirection, setTurnDirection] = useState<"forward" | "backward" | null>(null);
+
   const next = useCallback(() => {
     if (index >= total - 1) return;
     if (canAdvance && !canAdvance(index)) return;
+    setTurningIndex(index);
+    setTurnDirection("forward");
     onChange(index + 1);
   }, [index, total, onChange, canAdvance]);
 
   const prev = useCallback(() => {
-    if (index > 0) onChange(index - 1);
+    if (index <= 0) return;
+    setTurningIndex(index - 1);
+    setTurnDirection("backward");
+    onChange(index - 1);
   }, [index, onChange]);
+
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setTurningIndex(null);
+      setTurnDirection(null);
+    }, 1100);
+    return () => clearTimeout(t);
+  }, [index]);
 
   const handlePointerDown = (e: React.PointerEvent) => {
     startX.current = e.clientX;
@@ -35,8 +52,7 @@ export function PageTurner({ children, index, onChange, canAdvance }: Props) {
     startX.current = null;
     startY.current = null;
 
-    // Pastikan gestur horizontal lebih dominan daripada scroll vertikal
-    if (Math.abs(dx) > 45 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+    if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.2) {
       if (dx < 0) next();
       else prev();
     }
@@ -46,7 +62,7 @@ export function PageTurner({ children, index, onChange, canAdvance }: Props) {
 
   return (
     <div
-      className="book"
+      className="book-wrapper"
       tabIndex={0}
       onKeyDown={(e) => {
         if (e.key === "ArrowRight") next();
@@ -56,29 +72,64 @@ export function PageTurner({ children, index, onChange, canAdvance }: Props) {
       onPointerUp={handlePointerUp}
       style={{ touchAction: "pan-y" }}
     >
-      {children.map((child, i) => {
-        const turned = i < index;
-        const active = i === index;
-        // z-index kalkulasi presisi: halaman terdepan selalu punya z-index tertinggi
-        const z = active ? 50 : turned ? i : total - i;
+      <div className="book-spine" />
 
-        return (
-          <section
-            key={i}
-            className={`page${turned ? " turned" : ""}${active ? " cur" : ""}`}
-            style={{
-              zIndex: z,
-              pointerEvents: active ? "auto" : "none",
-              visibility: Math.abs(i - index) > 2 ? "hidden" : "visible",
-            }}
-            aria-hidden={!active}
-          >
-            <div className="inner">{child}</div>
-          </section>
-        );
-      })}
+      <div className="book-deck">
+        {children.map((child, i) => {
+          const isTurned = i < index;
+          const isCurrent = i === index;
+          const isNextPage = i === index + 1;
+          const isPrevPage = i === index - 1;
 
-      {/* Navigasi Footer tetap di atas halaman kapanpun */}
+          // Hitung z-index bertingkat layaknya tumpukan kertas fisik
+          let zIndex = 1;
+          if (isCurrent) zIndex = 40;
+          else if (isTurned) zIndex = 10 + i;
+          else zIndex = 30 - i;
+
+          // Lembaran yang sedang aktif membalik mendapat z-index tertinggi
+          if (turningIndex === i) {
+            zIndex = 55;
+          }
+
+          let pageClass = "book-page";
+          if (isTurned) pageClass += " page-turned";
+          else if (isCurrent) pageClass += " page-current";
+          else pageClass += " page-stacked";
+
+          if (turningIndex === i) {
+            pageClass += turnDirection === "forward" ? " flipping-forward" : " flipping-backward";
+          }
+
+          return (
+            <div
+              key={i}
+              className={pageClass}
+              style={{
+                zIndex,
+                pointerEvents: isCurrent ? "auto" : "none",
+                visibility: Math.abs(i - index) > 2 ? "hidden" : "visible",
+              }}
+              aria-hidden={!isCurrent}
+            >
+              {/* Bagian Depan Halaman */}
+              <div className="page-face page-front">
+                <div className="inner">{child}</div>
+                <div className="page-crease" />
+                <div className="page-shadow-overlay" />
+              </div>
+
+              {/* Punggung Belakang Lembaran (Backface Kertas Antik) */}
+              <div className="page-face page-back">
+                <div className="back-paper-texture" />
+                <div className="back-crease" />
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      {/* Navigasi Footer Folio Bar */}
       {index > 0 && (
         <div className="navbar">
           <button
@@ -93,7 +144,7 @@ export function PageTurner({ children, index, onChange, canAdvance }: Props) {
           >
             ← Kembali
           </button>
-          <span className="folio" aria-live="polite">
+          <span className="folio-counter" aria-live="polite">
             {index} / {total - 1}
           </span>
           <button
