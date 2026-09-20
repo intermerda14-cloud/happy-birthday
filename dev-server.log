@@ -93,3 +93,21 @@ Incoming: [, ]
  GET / 200 in 84ms (next.js: 21ms, application-code: 63ms)
  GET / 200 in 109ms (next.js: 11ms, application-code: 99ms)
  GET / 200 in 164ms (next.js: 13ms, application-code: 151ms)
+✓ Compiled in 342ms
+✓ Compiled in 121ms
+✓ Compiled in 115ms
+ GET / 200 in 79ms (next.js: 21ms, application-code: 59ms)
+✓ Compiled in 91ms
+ GET / 200 in 56ms (next.js: 15ms, application-code: 42ms)
+✓ Compiled in 73ms
+ GET / 200 in 69ms (next.js: 18ms, application-code: 51ms)
+✓ Compiled in 93ms
+ GET / 200 in 75ms (next.js: 20ms, application-code: 55ms)
+✓ Compiled in 89ms
+ GET / 200 in 87ms (next.js: 18ms, application-code: 68ms)
+✓ Compiled in 95ms
+ GET / 200 in 78ms (next.js: 8ms, application-code: 70ms)
+✓ Compiled in 78ms
+ GET / 200 in 70ms (next.js: 21ms, application-code: 49ms)
+✓ Compiled in 132ms
+ GET / 200 in 119ms (next.js: 31ms, application-code: 88ms)

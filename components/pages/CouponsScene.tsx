@@ -2,6 +2,7 @@
 import { coupons } from "@/content/coupons";
 import { useBook } from "@/components/BookProvider";
 import { sounds } from "@/components/audio/SoundEngine";
+import { VineCorners } from "@/components/ui/VineCorners";
 
 export function CouponsScene() {
   const { state, dispatch } = useBook();
@@ -21,16 +22,20 @@ export function CouponsScene() {
     <div
       className="paper"
       style={{
-        padding: "1.8rem 1.2rem",
+        padding: "2rem 1.4rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
         height: "100%",
         overflowY: "auto",
+        position: "relative",
       }}
     >
-      <div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(185, 139, 74, 0.3)", paddingBottom: "0.4rem", marginBottom: "1rem" }}>
+      <div className="paper-frame" />
+      <VineCorners />
+
+      <div style={{ position: "relative", zIndex: 12 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(185, 139, 74, 0.35)", paddingBottom: "0.4rem", marginBottom: "1rem" }}>
           <span style={{ color: "var(--bronze)", fontStyle: "italic", fontSize: "0.8rem", letterSpacing: "0.1em" }}>
             Bab VI · Hadiah Kecil
           </span>
@@ -43,14 +48,14 @@ export function CouponsScene() {
           style={{
             fontFamily: "var(--serif)",
             color: "var(--ink)",
-            fontSize: "1.4rem",
-            margin: "0 0 0.8rem",
+            fontSize: "1.45rem",
+            margin: "0 0 0.6rem",
             fontWeight: 600,
           }}
         >
           Kupon Kasih Sayang
         </h2>
-        <p style={{ color: "var(--ink)", fontSize: "0.85rem", fontStyle: "italic", margin: "0 0 1.2rem", opacity: 0.85 }}>
+        <p style={{ color: "var(--ink)", fontSize: "0.85rem", fontStyle: "italic", margin: "0 0 1.2rem", opacity: 0.88 }}>
           Kupon ini berlaku kapan pun kamu ingin menggunakannya. Tekan &ldquo;Tukar&rdquo; untuk menyobek tiket.
         </p>
 
@@ -67,7 +72,7 @@ export function CouponsScene() {
                   background: "linear-gradient(135deg, #f7e8cc 0%, #ecd0a2 100%)",
                   border: "1px solid var(--gold)",
                   borderRadius: "6px",
-                  boxShadow: "0 4px 12px rgba(58, 29, 63, 0.15)",
+                  boxShadow: "0 6px 16px rgba(58, 29, 63, 0.18)",
                   position: "relative",
                   overflow: "hidden",
                   opacity: isTorn ? 0.75 : 1,
@@ -81,7 +86,7 @@ export function CouponsScene() {
                     display: "grid",
                     placeItems: "center",
                     borderRight: "2px dashed rgba(58, 29, 63, 0.35)",
-                    background: isTorn ? "rgba(0,0,0,0.06)" : "transparent",
+                    background: isTorn ? "rgba(0,0,0,0.08)" : "transparent",
                     color: "var(--bronze)",
                     fontSize: "1.2rem",
                     transform: isTorn ? "translate(-8px, 6px) rotate(-8deg)" : "none",
@@ -96,7 +101,7 @@ export function CouponsScene() {
                   <h3 style={{ fontFamily: "var(--serif)", color: "var(--ink)", fontSize: "1rem", margin: "0 0 0.2rem", fontWeight: 600 }}>
                     {coupon.title || `Kupon Istimewa #${i + 1}`}
                   </h3>
-                  <p style={{ color: "var(--ink)", fontSize: "0.82rem", margin: "0 0 0.6rem", lineHeight: 1.4, opacity: 0.85 }}>
+                  <p style={{ color: "var(--ink)", fontSize: "0.82rem", margin: "0 0 0.6rem", lineHeight: 1.4, opacity: 0.88 }}>
                     {coupon.text || "Bebas digunakan untuk satu permintaan apa saja."}
                   </p>
                   <button
@@ -107,12 +112,13 @@ export function CouponsScene() {
                       background: isTorn ? "var(--mint)" : "var(--ink)",
                       color: isTorn ? "var(--ink)" : "#fff",
                       border: "none",
-                      borderRadius: "3px",
-                      padding: "0.35rem 0.8rem",
+                      borderRadius: "4px",
+                      padding: "0.4rem 0.9rem",
                       fontSize: "0.78rem",
                       fontWeight: 600,
                       cursor: isTorn ? "default" : "pointer",
-                      transition: "background 0.2s",
+                      transition: "all 0.2s",
+                      boxShadow: isTorn ? "none" : "0 2px 6px rgba(0,0,0,0.2)",
                     }}
                   >
                     {isTorn ? "✓ Kupon Ditukar" : "Tukar Kupon"}
@@ -124,7 +130,7 @@ export function CouponsScene() {
         </div>
       </div>
 
-      <div style={{ textAlign: "center", marginTop: "1rem" }}>
+      <div style={{ textAlign: "center", marginTop: "1rem", position: "relative", zIndex: 12 }}>
         <span style={{ color: "var(--bronze)", fontStyle: "italic", fontSize: "0.8rem" }}>
           ~ status kupon tersimpan otomatis di perangkatmu ~
         </span>

@@ -1,6 +1,7 @@
 "use client";
 import { letter } from "@/content/letter";
 import { site } from "@/content/site";
+import { VineCorners } from "@/components/ui/VineCorners";
 
 export function LetterScene() {
   const paragraphs = letter.paragraphs.map((p) =>
@@ -15,7 +16,7 @@ export function LetterScene() {
     <div
       className="paper"
       style={{
-        padding: "2rem 1.4rem",
+        padding: "2.2rem 1.6rem 2rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -25,8 +26,11 @@ export function LetterScene() {
         position: "relative",
       }}
     >
-      <div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(185, 139, 74, 0.3)", paddingBottom: "0.4rem", marginBottom: "1.2rem" }}>
+      <div className="paper-frame" />
+      <VineCorners />
+
+      <div style={{ position: "relative", zIndex: 12 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(185, 139, 74, 0.35)", paddingBottom: "0.4rem", marginBottom: "1.2rem" }}>
           <span style={{ color: "var(--bronze)", fontStyle: "italic", fontSize: "0.8rem", letterSpacing: "0.1em" }}>
             Bab II · Surat Cinta
           </span>
@@ -39,7 +43,7 @@ export function LetterScene() {
           style={{
             fontFamily: "var(--serif)",
             color: "var(--ink)",
-            fontSize: "1.5rem",
+            fontSize: "1.55rem",
             margin: "0 0 1.2rem",
             fontWeight: 600,
           }}
@@ -47,14 +51,14 @@ export function LetterScene() {
           Sebuah Surat Untukmu
         </h2>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.1rem" }}>
           {paragraphs.map((para, i) => (
             <p
               key={i}
               className="letter-para"
               style={{
                 color: "var(--ink)",
-                lineHeight: 1.8,
+                lineHeight: 1.85,
                 fontSize: "0.96rem",
                 margin: 0,
                 textAlign: "justify",
@@ -66,7 +70,7 @@ export function LetterScene() {
                 <span
                   style={{
                     float: "left",
-                    fontSize: "2.8rem",
+                    fontSize: "2.9rem",
                     lineHeight: "0.8",
                     padding: "0.3rem 0.5rem 0 0",
                     color: "var(--bronze)",
@@ -84,7 +88,7 @@ export function LetterScene() {
       </div>
 
       {/* Tanda Tangan */}
-      <div style={{ marginTop: "2rem", textAlign: "right", borderTop: "1px dashed rgba(185, 139, 74, 0.3)", paddingTop: "0.8rem" }}>
+      <div style={{ marginTop: "2rem", textAlign: "right", borderTop: "1px dashed rgba(185, 139, 74, 0.35)", paddingTop: "0.8rem", position: "relative", zIndex: 12 }}>
         <p style={{ color: "var(--ink)", fontStyle: "italic", fontSize: "0.85rem", margin: "0 0 0.2rem" }}>
           Dengan segenap sayang & doa,
         </p>
@@ -92,7 +96,7 @@ export function LetterScene() {
           style={{
             fontFamily: "var(--serif)",
             color: "var(--bronze)",
-            fontSize: "1.3rem",
+            fontSize: "1.35rem",
             fontStyle: "italic",
             fontWeight: "bold",
           }}

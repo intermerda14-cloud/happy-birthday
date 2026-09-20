@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { album } from "@/content/album";
 import { sounds } from "@/components/audio/SoundEngine";
+import { VineCorners } from "@/components/ui/VineCorners";
 
 export function AlbumScene() {
   const [developed, setDeveloped] = useState<Record<number, boolean>>({});
@@ -28,7 +29,7 @@ export function AlbumScene() {
     <div
       className="paper"
       style={{
-        padding: "1.8rem 1.2rem",
+        padding: "2rem 1.4rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
@@ -37,13 +38,16 @@ export function AlbumScene() {
         position: "relative",
       }}
     >
-      <div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(185, 139, 74, 0.3)", paddingBottom: "0.4rem", marginBottom: "1rem" }}>
+      <div className="paper-frame" />
+      <VineCorners />
+
+      <div style={{ position: "relative", zIndex: 12 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(185, 139, 74, 0.35)", paddingBottom: "0.4rem", marginBottom: "1rem" }}>
           <span style={{ color: "var(--bronze)", fontStyle: "italic", fontSize: "0.8rem", letterSpacing: "0.1em" }}>
             Bab III · Kenangan
           </span>
           <span style={{ color: "var(--bronze)", fontSize: "0.75rem", fontStyle: "italic" }}>
-            Ketuk foto untuk mencetak / perbesar
+            Sentuh foto untuk mencetak / perbesar
           </span>
         </div>
 
@@ -51,7 +55,7 @@ export function AlbumScene() {
           style={{
             fontFamily: "var(--serif)",
             color: "var(--ink)",
-            fontSize: "1.4rem",
+            fontSize: "1.45rem",
             margin: "0 0 1rem",
             fontWeight: 600,
           }}
@@ -63,7 +67,7 @@ export function AlbumScene() {
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginTop: "0.5rem" }}>
           {firstSpread.photos.map((photo, i) => {
             const isDev = developed[i];
-            const rot = i % 2 === 0 ? "-2deg" : "2.5deg";
+            const rot = i % 2 === 0 ? "-2.5deg" : "2.5deg";
             const caption = photo.caption.replace(/^TODO:\s*/, "");
 
             return (
@@ -79,13 +83,15 @@ export function AlbumScene() {
                 style={{
                   background: "#ffffff",
                   padding: "8px 8px 12px",
-                  boxShadow: "0 4px 14px rgba(58, 29, 63, 0.18)",
+                  boxShadow: "0 6px 18px rgba(58, 29, 63, 0.22)",
                   borderRadius: "2px",
                   transform: `rotate(${rot})`,
                   cursor: "pointer",
                   transition: "transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.3s ease",
                   position: "relative",
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.transform = "rotate(0deg) scale(1.04)")}
+                onMouseLeave={(e) => (e.currentTarget.style.transform = `rotate(${rot}) scale(1)`)}
               >
                 {/* Washi tape dekoratif di atas */}
                 <div
@@ -93,11 +99,11 @@ export function AlbumScene() {
                     position: "absolute",
                     top: "-8px",
                     left: "30%",
-                    width: "40px",
+                    width: "42px",
                     height: "14px",
-                    background: "rgba(217, 160, 176, 0.75)",
+                    background: "rgba(217, 160, 176, 0.8)",
                     transform: "rotate(-3deg)",
-                    boxShadow: "0 1px 3px rgba(0,0,0,0.1)",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.12)",
                   }}
                 />
 
@@ -113,12 +119,12 @@ export function AlbumScene() {
                     placeItems: "center",
                     padding: "0.5rem",
                     textAlign: "center",
-                    filter: isDev ? "none" : "blur(2px) sepia(0.8)",
+                    filter: isDev ? "none" : "blur(2.5px) sepia(0.85)",
                     transition: "filter 0.8s ease, background 0.8s ease",
                   }}
                 >
                   <span style={{ color: isDev ? "#2c3e50" : "var(--champagne)", fontSize: "0.75rem", fontStyle: "italic" }}>
-                    {isDev ? "🔍 Ketuk untuk perbesar" : "✦ Sentuh untuk cetak"}
+                    {isDev ? "🔍 Ketuk perbesar" : "✦ Sentuh untuk cetak"}
                   </span>
                 </div>
 
@@ -142,7 +148,7 @@ export function AlbumScene() {
         </div>
       </div>
 
-      <div style={{ textAlign: "center", marginTop: "1rem" }}>
+      <div style={{ textAlign: "center", marginTop: "1rem", position: "relative", zIndex: 12 }}>
         <span style={{ color: "var(--bronze)", fontStyle: "italic", fontSize: "0.8rem" }}>
           ~ setiap detik bersamamu adalah cerita ~
         </span>
@@ -156,13 +162,13 @@ export function AlbumScene() {
             position: "fixed",
             inset: 0,
             zIndex: 999,
-            background: "rgba(18, 6, 23, 0.92)",
+            background: "rgba(18, 6, 23, 0.94)",
             display: "flex",
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             padding: "2rem 1.5rem",
-            backdropFilter: "blur(6px)",
+            backdropFilter: "blur(8px)",
             animation: "fade 0.3s ease",
           }}
         >
@@ -174,7 +180,7 @@ export function AlbumScene() {
               borderRadius: "4px",
               maxWidth: "320px",
               width: "100%",
-              boxShadow: "0 10px 40px rgba(0,0,0,0.8)",
+              boxShadow: "0 12px 45px rgba(0,0,0,0.85)",
               textAlign: "center",
             }}
           >

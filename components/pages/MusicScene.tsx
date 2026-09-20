@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { tracks } from "@/content/tracks";
 import { sounds } from "@/components/audio/SoundEngine";
+import { VineCorners } from "@/components/ui/VineCorners";
 
 export function MusicScene() {
   const [activeIdx, setActiveIdx] = useState(0);
@@ -16,7 +17,6 @@ export function MusicScene() {
 
   const current = cleanTracks[activeIdx] || cleanTracks[0];
 
-  // Ambil Spotify Track ID dari URI misal "spotify:track:08mG3Y1vljYA6bvDt4Wqkj" atau URL
   const trackIdMatch = current.uri.match(/track[:/]([a-zA-Z0-9]+)/);
   const spotifyTrackId = trackIdMatch ? trackIdMatch[1] : "08mG3Y1vljYA6bvDt4Wqkj";
 
@@ -30,17 +30,21 @@ export function MusicScene() {
     <div
       className="paper"
       style={{
-        padding: "1.8rem 1.4rem",
+        padding: "2rem 1.4rem",
         display: "flex",
         flexDirection: "column",
         justifyContent: "space-between",
         height: "100%",
         overflowY: "auto",
         textAlign: "center",
+        position: "relative",
       }}
     >
-      <div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(185, 139, 74, 0.3)", paddingBottom: "0.4rem", marginBottom: "0.8rem" }}>
+      <div className="paper-frame" />
+      <VineCorners />
+
+      <div style={{ position: "relative", zIndex: 12 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", borderBottom: "1px solid rgba(185, 139, 74, 0.35)", paddingBottom: "0.4rem", marginBottom: "0.8rem" }}>
           <span style={{ color: "var(--bronze)", fontStyle: "italic", fontSize: "0.8rem", letterSpacing: "0.1em" }}>
             Bab V · Lagu Kita
           </span>
@@ -53,7 +57,7 @@ export function MusicScene() {
           style={{
             fontFamily: "var(--serif)",
             color: "var(--ink)",
-            fontSize: "1.4rem",
+            fontSize: "1.45rem",
             margin: "0 0 0.8rem",
             fontWeight: 600,
           }}
@@ -61,17 +65,17 @@ export function MusicScene() {
           Piringan Nada Favorit
         </h2>
 
-        {/* Meja Putar & Piringan Hitam */}
-        <div style={{ display: "flex", justifyContent: "center", margin: "0.5rem 0" }}>
+        {/* Meja Putar & Piringan Hitam dengan Efek Bayangan Mendalam */}
+        <div style={{ display: "flex", justifyContent: "center", margin: "0.6rem 0" }}>
           <div
             onClick={togglePlay}
             style={{
-              width: "130px",
-              height: "130px",
+              width: "135px",
+              height: "135px",
               borderRadius: "50%",
               background: "radial-gradient(circle, #2c3e50 0%, #1a252f 40%, #000000 70%, #111 100%)",
               border: "3px solid var(--gold)",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.35)",
+              boxShadow: "0 10px 30px rgba(0,0,0,0.45), inset 0 0 10px rgba(201,162,94,0.3)",
               display: "grid",
               placeItems: "center",
               cursor: "pointer",
@@ -79,17 +83,18 @@ export function MusicScene() {
               position: "relative",
             }}
           >
-            {/* Label Tengah */}
+            {/* Label Tengah Vinyl */}
             <div
               style={{
-                width: "44px",
-                height: "44px",
+                width: "46px",
+                height: "46px",
                 borderRadius: "50%",
                 background: "radial-gradient(circle, var(--champagne), var(--gold))",
                 border: "2px solid #fff",
                 display: "grid",
                 placeItems: "center",
-                fontSize: "0.85rem",
+                fontSize: "0.9rem",
+                boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
               }}
             >
               {isPlaying ? "❚❚" : "▶"}
@@ -99,21 +104,21 @@ export function MusicScene() {
 
         {/* Informasi & Catatan Pribadi */}
         <div style={{ margin: "0.6rem 0" }}>
-          <h3 style={{ fontFamily: "var(--serif)", color: "var(--ink)", fontSize: "1.1rem", margin: "0 0 0.2rem", fontWeight: 600 }}>
+          <h3 style={{ fontFamily: "var(--serif)", color: "var(--ink)", fontSize: "1.15rem", margin: "0 0 0.2rem", fontWeight: 600 }}>
             {current.title || "Lagu Kenangan"}
           </h3>
           <p style={{ color: "var(--bronze)", fontSize: "0.82rem", fontStyle: "italic", margin: "0 0 0.6rem" }}>
             {current.artist || "Penyanyi Favorit"}
           </p>
-          <div style={{ background: "rgba(217, 160, 176, 0.2)", padding: "0.7rem", borderRadius: "4px", borderLeft: "3px solid var(--rose)" }}>
-            <p style={{ color: "var(--ink)", fontSize: "0.85rem", fontStyle: "italic", margin: 0, lineHeight: 1.45 }}>
+          <div style={{ background: "rgba(217, 160, 176, 0.22)", padding: "0.75rem", borderRadius: "4px", borderLeft: "3px solid var(--rose)", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+            <p style={{ color: "var(--ink)", fontSize: "0.85rem", fontStyle: "italic", margin: 0, lineHeight: 1.5 }}>
               &ldquo;{current.note || "Setiap kali mendengarkan melodi ini, selalu ada senyummu yang terlintas di ingatan."}&rdquo;
             </p>
           </div>
         </div>
 
         {/* Spotify Embed Player Kompak */}
-        <div style={{ margin: "0.8rem 0", borderRadius: "8px", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.1)" }}>
+        <div style={{ margin: "0.8rem 0", borderRadius: "8px", overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.15)" }}>
           <iframe
             src={`https://open.spotify.com/embed/track/${spotifyTrackId}?utm_source=generator&theme=0`}
             width="100%"
@@ -137,7 +142,7 @@ export function MusicScene() {
                 sounds.duckAmbient(true);
               }}
               style={{
-                padding: "0.3rem 0.7rem",
+                padding: "0.3rem 0.75rem",
                 borderRadius: "14px",
                 border: "1px solid var(--gold)",
                 background: activeIdx === i ? "var(--ink)" : "transparent",
@@ -145,6 +150,7 @@ export function MusicScene() {
                 fontSize: "0.72rem",
                 fontWeight: 600,
                 cursor: "pointer",
+                transition: "all 0.2s ease",
               }}
             >
               Lagu {i + 1}
@@ -153,7 +159,7 @@ export function MusicScene() {
         </div>
       </div>
 
-      <div style={{ marginTop: "0.5rem" }}>
+      <div style={{ marginTop: "0.5rem", position: "relative", zIndex: 12 }}>
         <span style={{ color: "var(--bronze)", fontStyle: "italic", fontSize: "0.75rem" }}>
           {isPlaying ? "♪ Melodi berputar... (Audio latar diredupkan)" : "Ketuk piringan hitam atau putar lagu di Spotify"}
         </span>

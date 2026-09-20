@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
+import { VineCorners } from "@/components/ui/VineCorners";
 
 interface Props {
   blown: boolean;
@@ -53,18 +54,20 @@ export function CandleScene({ blown, onBlow }: Props) {
         flexDirection: "column",
         justifyContent: "space-between",
         alignItems: "center",
-        padding: "2rem 1.5rem",
+        padding: "2.5rem 1.6rem 2rem",
         textAlign: "center",
         transition: "background 2.4s cubic-bezier(0.22, 0.61, 0.36, 1)",
         background: blown
-          ? "radial-gradient(circle at 50% 40%, #f7dfcb 0%, #f1cbba 50%, #e2b1a0 100%)"
+          ? "radial-gradient(circle at 50% 35%, #fff3e6 0%, #f7dfcb 40%, #edd0be 70%, #d8ae9b 100%)"
           : "radial-gradient(circle at 50% 35%, #3b1d45 0%, #1e0b26 65%, #120617 100%)",
-        borderRadius: "2px",
+        borderRadius: "4px",
         overflow: "hidden",
       }}
     >
+      <VineCorners />
+
       {/* Header Bab 1 */}
-      <div>
+      <div style={{ position: "relative", zIndex: 12 }}>
         <span
           style={{
             color: blown ? "var(--bronze)" : "var(--gold)",
@@ -81,7 +84,7 @@ export function CandleScene({ blown, onBlow }: Props) {
           style={{
             fontFamily: "var(--serif)",
             color: blown ? "var(--ink)" : "var(--champagne)",
-            fontSize: "1.7rem",
+            fontSize: "1.75rem",
             margin: "0.4rem 0 0.5rem",
             fontWeight: 600,
           }}
@@ -94,8 +97,9 @@ export function CandleScene({ blown, onBlow }: Props) {
             fontSize: "0.9rem",
             fontStyle: "italic",
             margin: 0,
-            opacity: 0.85,
+            opacity: 0.88,
             maxWidth: "280px",
+            lineHeight: 1.5,
           }}
         >
           {blown
@@ -112,16 +116,17 @@ export function CandleScene({ blown, onBlow }: Props) {
           alignItems: "center",
           position: "relative",
           margin: "1.5rem 0",
+          zIndex: 12,
         }}
       >
-        {/* Lingkaran Progress Hold */}
+        {/* Lingkaran Progress Hold Emas */}
         {holding && (
           <div
             style={{
               position: "absolute",
               top: "-25px",
-              width: "120px",
-              height: "120px",
+              width: "126px",
+              height: "126px",
               borderRadius: "50%",
               border: "2px solid rgba(233, 207, 160, 0.3)",
               borderTopColor: "var(--gold)",
@@ -154,11 +159,11 @@ export function CandleScene({ blown, onBlow }: Props) {
             {!blown ? (
               <div
                 style={{
-                  width: "24px",
-                  height: "44px",
+                  width: "26px",
+                  height: "46px",
                   background: "radial-gradient(ellipse at 50% 80%, #ffffff 0%, #ffeaa7 30%, #f39c12 70%, #d35400 100%)",
                   borderRadius: "50% 50% 35% 35% / 60% 60% 40% 40%",
-                  boxShadow: "0 0 28px rgba(243, 156, 18, 0.8), 0 0 50px rgba(241, 196, 15, 0.5)",
+                  boxShadow: "0 0 32px rgba(243, 156, 18, 0.9), 0 0 60px rgba(241, 196, 15, 0.6)",
                   transform: holding ? "rotate(25deg) scale(0.85)" : "rotate(0deg) scale(1)",
                   transformOrigin: "bottom center",
                   transition: "transform 0.3s ease",
@@ -169,26 +174,26 @@ export function CandleScene({ blown, onBlow }: Props) {
               <div
                 style={{
                   width: "4px",
-                  height: "28px",
-                  background: "linear-gradient(to top, rgba(100,100,100,0.8), transparent)",
+                  height: "30px",
+                  background: "linear-gradient(to top, rgba(120,80,90,0.8), transparent)",
                   borderRadius: "2px",
-                  animation: "smoke 2s ease-out forwards",
+                  animation: "smoke 2.2s ease-out forwards",
                 }}
               />
             )}
 
-            {/* Sumbu */}
+            {/* Sumbu Lilin */}
             <div style={{ width: "2.5px", height: "10px", background: "#333", margin: "-2px 0 0" }} />
 
-            {/* Batang Lilin */}
+            {/* Batang Lilin Antik */}
             <div
               style={{
-                width: "46px",
-                height: "110px",
+                width: "48px",
+                height: "115px",
                 background: "linear-gradient(135deg, #f6e7c6 0%, #e9cfa0 50%, #c9a25e 100%)",
                 borderRadius: "4px 4px 6px 6px",
-                border: "1px solid rgba(201, 162, 94, 0.5)",
-                boxShadow: blown ? "0 4px 12px rgba(0,0,0,0.15)" : "0 8px 24px rgba(0,0,0,0.5)",
+                border: "1px solid rgba(201, 162, 94, 0.6)",
+                boxShadow: blown ? "0 6px 16px rgba(90,50,30,0.2)" : "0 10px 30px rgba(0,0,0,0.6)",
               }}
             />
           </div>
@@ -196,14 +201,14 @@ export function CandleScene({ blown, onBlow }: Props) {
 
         {/* Petunjuk / status */}
         {!blown && (
-          <span style={{ color: "var(--champagne)", fontSize: "0.8rem", fontStyle: "italic", marginTop: "0.5rem" }}>
-            {holding ? `Meniup... ${Math.round(progress)}%` : "Tekan & tahan apinya..."}
+          <span style={{ color: "var(--champagne)", fontSize: "0.82rem", fontStyle: "italic", marginTop: "0.5rem" }}>
+            {holding ? `Meniup... ${Math.round(progress)}%` : "✦ Tekan & tahan apinya..."}
           </span>
         )}
       </div>
 
       {/* Footer Bab 1 */}
-      <div>
+      <div style={{ position: "relative", zIndex: 12 }}>
         <p style={{ color: blown ? "var(--bronze)" : "var(--gold)", fontSize: "0.85rem", fontStyle: "italic", margin: 0 }}>
           {blown ? "Geser ke kanan untuk membaca surat →" : "Lilin harus ditiup sebelum lanjut membaca"}
         </p>
@@ -217,7 +222,7 @@ export function CandleScene({ blown, onBlow }: Props) {
         }
         @keyframes smoke {
           0% { opacity: 0.8; transform: translateY(0) scaleX(1); }
-          100% { opacity: 0; transform: translateY(-30px) scaleX(3); }
+          100% { opacity: 0; transform: translateY(-35px) scaleX(3.5); }
         }
       `}</style>
     </div>
