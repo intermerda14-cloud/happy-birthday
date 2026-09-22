@@ -26,4 +26,4 @@ async function collect(dir) {
 
 const files = await collect(contentDir);
 let bad = 0;
-let total = 02 
+let total = 0 
