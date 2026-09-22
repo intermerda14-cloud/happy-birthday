@@ -1,19 +1,65 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { tracks } from "@/content/tracks";
 import { sounds } from "@/components/audio/SoundEngine";
 import { VineCorners } from "@/components/ui/VineCorners";
 import { usePageActive } from "@/hooks/usePageActive";
 
-const ICON_PLAY = "\u25B6";
-const ICON_PAUSE = "\u23F8\u23F8";
+declare global {
+  interface Window {
+    onSpotifyIframeApiReady?: (IFrameAPI: SpotifyIFrameAPI) => void;
+  }
+}
+
+interface SpotifyEmbedController {
+  loadUri: (uri: string) => void;
+  play: () => void;
+  pause: () => void;
+  resume: () => void;
+  togglePlay: () => void;
+  addListener: (event: string, cb: (e: { data: { isPaused: boolean; isBuffering?: boolean } }) => void) => void;
+  removeListener: (event: string) => void;
+  destroy: () => void;
+}
+
+interface SpotifyIFrameAPI {
+  createController: (
+    element: HTMLElement,
+    options: { uri: string; width?: string | number; height?: string | number },
+    callback: (controller: SpotifyEmbedController) => void,
+  ) => void;
+}
+
 const ICON_NOTE = "\u266A";
+
+let spotifyApiPromise: Promise<SpotifyIFrameAPI> | null = null;
+
+function loadSpotifyIframeApi(): Promise<SpotifyIFrameAPI> {
+  if (spotifyApiPromise) return spotifyApiPromise;
+  spotifyApiPromise = new Promise((resolve) => {
+    if (typeof window === "undefined") return;
+    const existingCallback = window.onSpotifyIframeApiReady;
+    window.onSpotifyIframeApiReady = (IFrameAPI: SpotifyIFrameAPI) => {
+      existingCallback?.(IFrameAPI);
+      resolve(IFrameAPI);
+    };
+    if (document.getElementById("spotify-iframe-api-script")) return;
+    const script = document.createElement("script");
+    script.id = "spotify-iframe-api-script";
+    script.src = "https://open.spotify.com/embed/iframe-api/v1";
+    script.async = true;
+    document.body.appendChild(script);
+  });
+  return spotifyApiPromise;
+}
 
 export function MusicScene() {
   const [wrapRef, active] = usePageActive<HTMLDivElement>();
+  const mountRef = useRef<HTMLDivElement | null>(null);
+  const controllerRef = useRef<SpotifyEmbedController | null>(null);
+
   const [selectedIdx, setSelectedIdx] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const [iframeReady, setIframeReady] = useState(false);
+  const [controllerReady, setControllerReady] = useState(false);
 
   const cleanTracks = tracks.map((t) => ({
     title: t.title.replace(/^TODO:\s*/, ""),
@@ -22,56 +68,57 @@ export function MusicScene() {
     uri: t.spotifyUri.replace(/^TODO:\s*/, ""),
   }));
   const current = cleanTracks[selectedIdx] || cleanTracks[0];
-  const trackIdMatch = current.uri.match(/track[:/]([a-zA-Z0-9]+)/);
-  const spotifyTrackId = trackIdMatch ? trackIdMatch[1] : "08mG3Y1vljYA6bvDt4Wqkj";
-
-  const embedBase = `https://open.spotify.com/embed/track/${spotifyTrackId}?utm_source=generator&theme=0`;
-  const embedSrc = playing ? `${embedBase}&autoplay=1` : embedBase;
 
   useEffect(() => {
-    setIframeReady(false);
-  }, [embedSrc]);
+    if (!active) return;
+    let cancelled = false;
 
-  const play = (idx?: number) => {
-    if (typeof idx === "number") setSelectedIdx(idx);
-    setPlaying(true);
-    sounds.duckAmbient(true);
-  };
+    loadSpotifyIframeApi().then((IFrameAPI) => {
+      if (cancelled || !mountRef.current) return;
+      IFrameAPI.createController(
+        mountRef.current,
+        { uri: cleanTracks[0]?.uri || "", width: "100%", height: "80" },
+        (controller) => {
+          if (cancelled) return;
+          controllerRef.current = controller;
+          setControllerReady(true);
 
-  const stop = () => {
-    setPlaying(false);
-    sounds.duckAmbient(false);
-  };
+          // Catatan: event playback_update dari Spotify iFrame API terbukti tidak reliable
+          // (browser dengan storage partitioning me-reload iframe internal, memutus koneksi
+          // postMessage). Duck ambient sepenuhnya berbasis status halaman aktif (lihat effect
+          // terpisah di bawah), bukan status play/pause Spotify.
+        },
+      );
+    });
 
-  const toggleDisc = () => {
-    if (playing) stop();
-    else play();
-  };
-
-  const pickTrack = (idx: number) => {
-    if (idx === selectedIdx && playing) {
-      stop();
-      return;
-    }
-    play(idx);
-  };
-
-  useEffect(() => {
-    if (!active) stop();
+    return () => {
+      cancelled = true;
+      controllerRef.current?.destroy();
+      controllerRef.current = null;
+      setControllerReady(false);
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
 
-  useEffect(
-    () => () => {
-      if (playing) sounds.duckAmbient(false);
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [],
-  );
+  // Duck ambient sepenuhnya berbasis halaman aktif: masuk Bab V -> ambient redup,
+  // pindah halaman -> ambient balik normal. Reliable karena tidak bergantung pada
+  // event Spotify yang terbukti bisa putus akibat storage access reload.
+  useEffect(() => {
+    sounds.duckAmbient(active);
+    return () => {
+      sounds.duckAmbient(false);
+    };
+  }, [active]);
 
-  const showPlayer = playing && iframeReady;
-  const showLoading = playing && !iframeReady;
-  const statusText = playing ? ICON_NOTE + " Melodi berputar... (Audio latar diredupkan)" : "Ketuk piringan hitam atau putar lagu di Spotify";
+  const pickTrack = (idx: number) => {
+    setSelectedIdx(idx);
+    const uri = cleanTracks[idx]?.uri;
+    if (uri && controllerRef.current) {
+      controllerRef.current.loadUri(uri);
+    }
+  };
+
+  const statusText = "Putar lagu langsung dari widget Spotify di bawah (audio latar otomatis diredupkan)";
 
   return (
     <>
@@ -122,10 +169,8 @@ export function MusicScene() {
           </h2>
 
           <div style={{ display: "flex", justifyContent: "center", margin: "0.6rem 0" }}>
-            <button
-              type="button"
-              onClick={toggleDisc}
-              aria-label={playing ? "Jeda lagu" : "Putar lagu"}
+            <div
+              aria-hidden="true"
               style={{
                 width: "135px",
                 height: "135px",
@@ -135,10 +180,8 @@ export function MusicScene() {
                 boxShadow: "0 10px 30px rgba(0,0,0,0.45), inset 0 0 10px rgba(201,162,94,0.3)",
                 display: "grid",
                 placeItems: "center",
-                cursor: "pointer",
-                animation: playing ? "spin 5s linear infinite" : "none",
+                animation: active ? "spin 5s linear infinite" : "none",
                 position: "relative",
-                padding: 0,
               }}
             >
               <span
@@ -154,9 +197,9 @@ export function MusicScene() {
                   boxShadow: "0 2px 6px rgba(0,0,0,0.3)",
                 }}
               >
-                {playing ? ICON_PAUSE : ICON_PLAY}
+                {ICON_NOTE}
               </span>
-            </button>
+            </div>
           </div>
 
           <div style={{ margin: "0.6rem 0" }}>
@@ -178,7 +221,7 @@ export function MusicScene() {
           </div>
 
           <div style={{ margin: "0.8rem 0", borderRadius: "8px", overflow: "hidden", boxShadow: "0 4px 14px rgba(0,0,0,0.15)", minHeight: 80, position: "relative" }}>
-            {showLoading && (
+            {!controllerReady && active && (
               <div
                 style={{
                   position: "absolute",
@@ -194,19 +237,7 @@ export function MusicScene() {
                 Memuat Spotify...
               </div>
             )}
-            {active && (
-              <iframe
-                key="spotify-embed"
-                src={embedSrc}
-                width="100%"
-                height="80"
-                frameBorder="0"
-                allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                onLoad={() => setIframeReady(true)}
-                title="Spotify Embed Player"
-                style={{ display: showPlayer ? "block" : "none" }}
-              />
-            )}
+            <div ref={mountRef} style={{ minHeight: 80 }} />
           </div>
 
           <div style={{ display: "flex", justifyContent: "center", gap: "0.4rem", marginTop: "0.4rem" }}>

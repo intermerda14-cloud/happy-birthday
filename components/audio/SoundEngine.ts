@@ -14,7 +14,7 @@ const AMBIENT_PROGRESSION = [
 const AMBIENT_PATTERN = [0, 1, 2, 3, 4, 3, 2, 1];
 const AMBIENT_STEP = 0.44; // detik per not (sekitar 68 bpm)
 
-const AMBIENT_FILE_VOLUME = 0.3; // volume musik latar dari file sendiri (0 sampai 1)
+const AMBIENT_FILE_VOLUME = 1.0; // gain amplify musik latar dari file sendiri (via GainNode, bisa > 1)
 
 class SoundEngine {
   private ctx: AudioContext | null = null;
@@ -23,6 +23,8 @@ class SoundEngine {
   private enabled = true;
   private ducked = false;
   private ambientEl: HTMLAudioElement | null = null;
+  private ambientElSource: MediaElementAudioSourceNode | null = null;
+  private ambientElGain: GainNode | null = null;
   private fadeTimer: ReturnType<typeof setInterval> | null = null;
   private ambientTimer: ReturnType<typeof setInterval> | null = null;
   private ambientSend: GainNode | null = null;
@@ -49,11 +51,29 @@ class SoundEngine {
   }
 
   private startCustomAmbient(src: string) {
+    this.initCtx();
     const el = new Audio(src);
     el.loop = true;
-    el.volume = 0;
+    el.volume = 1; // volume native dikunci 1.0, gain dikontrol via GainNode
+    el.crossOrigin = "anonymous";
     this.ambientEl = el;
     this.isAmbientPlaying = true;
+
+    if (this.ctx) {
+      try {
+        const source = this.ctx.createMediaElementSource(el);
+        const gain = this.ctx.createGain();
+        gain.gain.value = 0;
+        source.connect(gain);
+        gain.connect(this.ctx.destination);
+        this.ambientElSource = source;
+        this.ambientElGain = gain;
+      } catch {
+        // Fallback: kalau Web Audio graph gagal (mis. browser lama), pakai volume element biasa.
+        this.ambientElGain = null;
+      }
+    }
+
     if (this.enabled && !this.ducked) this.fadeEl(AMBIENT_FILE_VOLUME);
   }
 
@@ -62,17 +82,39 @@ class SoundEngine {
     if (!el) return;
     if (this.fadeTimer) clearInterval(this.fadeTimer);
     if (target > 0 && el.paused) el.play().catch(() => {});
+
+    const FADE_DURATION_MS = 3000; // fade dramatis 3 detik
+    const TICK_MS = 50;
+    const totalTicks = FADE_DURATION_MS / TICK_MS;
+    let tick = 0;
+
+    const gainNode = this.ambientElGain;
+    const startLevel = gainNode ? gainNode.gain.value : el.volume;
+    const maxLevel = gainNode ? target : Math.min(1, target);
+
     this.fadeTimer = setInterval(() => {
-      const d = target - el.volume;
-      if (Math.abs(d) <= 0.03) {
-        el.volume = target;
+      tick += 1;
+      const progress = Math.min(1, tick / totalTicks);
+      const eased = progress < 0.5 ? 4 * progress * progress * progress : 1 - Math.pow(-2 * progress + 2, 3) / 2;
+      const level = Math.max(0, startLevel + (maxLevel - startLevel) * eased);
+
+      if (gainNode) {
+        gainNode.gain.value = level;
+      } else {
+        el.volume = Math.min(1, level);
+      }
+
+      if (progress >= 1) {
+        if (gainNode) {
+          gainNode.gain.value = maxLevel;
+        } else {
+          el.volume = Math.min(1, maxLevel);
+        }
         if (this.fadeTimer) clearInterval(this.fadeTimer);
         this.fadeTimer = null;
         if (target === 0) el.pause();
-        return;
       }
-      el.volume = Math.max(0, Math.min(1, el.volume + Math.sign(d) * 0.03));
-    }, 50);
+    }, TICK_MS);
   }
 
   private applyAmbient() {
