@@ -1,13 +1,13 @@
-// components/ui/LuxDefs.tsx
+// components/ui/LuxDefs.tsx  (pengganti)
 // Filter SVG bersama: kulit sampul, kilau segel lilin, dan api lilin yang bergoyang.
 export function LuxDefs() {
   return (
     <svg width="0" height="0" style={{ position: "absolute" }} aria-hidden="true" focusable="false">
       <defs>
         <filter id="lux-leather" x="0" y="0" width="100%" height="100%">
-          <feTurbulence type="fractalNoise" baseFrequency=".75" numOctaves="3" seed="4" result="n" />
-          <feDiffuseLighting in="n" surfaceScale="1.8" lightingColor="#7a4a8a">
-            <feDistantLight azimuth="225" elevation="50" />
+          <feTurbulence type="fractalNoise" baseFrequency=".55" numOctaves="3" seed="4" result="n" />
+          <feDiffuseLighting in="n" surfaceScale="3.2" lightingColor="#8f5aa0">
+            <feDistantLight azimuth="225" elevation="46" />
           </feDiffuseLighting>
         </filter>
 
@@ -15,7 +15,7 @@ export function LuxDefs() {
           <feTurbulence baseFrequency=".06" numOctaves="2" seed="3" result="t" />
           <feDisplacementMap in="SourceGraphic" in2="t" scale="9" result="d" />
           <feGaussianBlur in="d" stdDeviation="1.6" result="b" />
-          <feSpecularLighting in="b" surfaceScale="5" specularConstant="1.1" specularExponent="24" lightingColor="#ffdede" result="s">
+          <feSpecularLighting in="b" surfaceScale="5" specularConstant=".8" specularExponent="30" lightingColor="#ffc4c4" result="s">
             <fePointLight x="30" y="14" z="70" />
           </feSpecularLighting>
           <feComposite in="s" in2="d" operator="in" result="s2" />
@@ -32,9 +32,9 @@ export function LuxDefs() {
 
         <symbol id="lux-seal" viewBox="0 0 120 120">
           <g filter="url(#lux-wax)">
-            <circle cx="60" cy="60" r="46" fill="#7B1E3A" />
-            <circle cx="60" cy="60" r="34" fill="none" stroke="#5E1229" strokeWidth="3" />
-            <text x="60" y="76" textAnchor="middle" fontFamily="Georgia, serif" fontSize="44" fontWeight="600" fill="#93294A">A</text>
+            <circle cx="60" cy="60" r="46" fill="#68122c" />
+            <circle cx="60" cy="60" r="34" fill="none" stroke="#4a0c1f" strokeWidth="3" />
+            <text x="60" y="76" textAnchor="middle" fontFamily="Georgia, serif" fontSize="44" fontWeight="600" fill="#7d1a3a">A</text>
           </g>
         </symbol>
       </defs>

@@ -22,20 +22,14 @@ export function useTilt(target: RefObject<HTMLElement | null>) {
       ty = Math.max(-1, Math.min(1, y));
       if (!raf) raf = requestAnimationFrame(flush);
     };
-    const onOrientation = (e: DeviceOrientationEvent) => {
-      if (e.gamma == null || e.beta == null) return;
-      set(e.gamma / 30, (e.beta - 45) / 30);
-    };
     const onPointer = (e: PointerEvent) => {
       const r = el.getBoundingClientRect();
       set(((e.clientX - r.left) / r.width - 0.5) * 2, ((e.clientY - r.top) / r.height - 0.5) * 2);
     };
 
-    window.addEventListener("deviceorientation", onOrientation);
     const fine = window.matchMedia("(pointer: fine)").matches;
     if (fine) window.addEventListener("pointermove", onPointer);
     return () => {
-      window.removeEventListener("deviceorientation", onOrientation);
       if (fine) window.removeEventListener("pointermove", onPointer);
       if (raf) cancelAnimationFrame(raf);
     };

@@ -1,0 +1,28 @@
+/* components/pages/album.css */
+.al-wrap { position: relative; z-index: 12; }
+.al-title { font-family: var(--serif); color: var(--ink); font-size: 1.9rem; font-weight: 500; margin: 0 0 .3rem; text-align: center; font-variation-settings: "SOFT" 100; }
+.al-sub { text-align: center; margin: 0 0 1.8rem; font: italic 500 .95rem var(--serif); color: var(--ink); opacity: .8; }
+.al-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.6rem 1.1rem; }
+.al-grid .al-pol:nth-child(odd) { --r: -2deg; }
+.al-grid .al-pol:nth-child(even) { --r: 2deg; margin-top: 1.4rem; }
+.al-grid .al-pol:nth-child(3) { grid-column: 1 / -1; width: 60%; justify-self: center; margin-top: 0; }
+.al-pol { position: relative; background: #fbf8f2; border: 0; padding: 8px 8px 10px; text-align: left; cursor: pointer; color: var(--ink);
+  box-shadow: 0 1px 2px rgba(58,29,63,.2), 0 12px 22px -8px rgba(58,29,63,.4); transform: rotate(var(--r, 0deg)); transition: transform .7s cubic-bezier(.34,1.56,.64,1); touch-action: manipulation; }
+.al-pol::before { content: ""; position: absolute; top: -10px; left: 50%; width: 54px; height: 18px; margin-left: -27px; background: rgba(217,190,140,.72); transform: rotate(-4deg); box-shadow: 0 1px 2px rgba(0,0,0,.15); }
+.al-pol:active { transform: rotate(0) scale(1.03); }
+.al-ph { display: block; position: relative; aspect-ratio: 4 / 5; overflow: hidden; filter: blur(4px) sepia(.9) brightness(.8); transition: filter 1.6s var(--ease-page); }
+.al-ph.dev { filter: none; }
+.al-ph img, .al-box-img img, .al-kb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.al-cap { display: block; margin-top: .55rem; font: italic 500 .8rem/1.4 var(--serif); }
+.al-feature { position: relative; display: block; width: 100%; margin: 2.4rem 0 1rem; padding: 8px 8px 12px; border: 0; background: #fbf8f2; cursor: pointer; color: var(--ink);
+  box-shadow: 0 1px 2px rgba(58,29,63,.2), 0 14px 26px -8px rgba(58,29,63,.42); touch-action: manipulation; }
+.al-kb { display: block; position: relative; aspect-ratio: 4 / 5; overflow: hidden; }
+.al-kb img { animation: al-kb 18s ease-in-out infinite alternate; }
+@keyframes al-kb { from { transform: scale(1); } to { transform: scale(1.12) translate(-2%, -2%); } }
+.al-feature-cap { display: block; margin-top: .8rem; text-align: center; font: italic 500 .95rem/1.4 var(--serif); }
+.al-box { position: fixed; inset: 0; z-index: 60; display: flex; align-items: center; justify-content: center; padding: 1rem; background: rgba(20,6,26,.9); animation: al-fade .3s both; }
+.al-box-in { width: 100%; max-width: 340px; text-align: center; color: var(--champagne); }
+.al-box-img { position: relative; aspect-ratio: 4 / 5; overflow: hidden; margin-bottom: .9rem; box-shadow: 0 20px 50px rgba(0,0,0,.6); }
+.al-box-in p { margin: 0 0 1rem; font: italic 500 1rem/1.5 var(--serif); }
+@keyframes al-fade { from { opacity: 0; } }
+@media (prefers-reduced-motion: reduce) { .al-kb img { animation: none; } }

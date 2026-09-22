@@ -15,6 +15,13 @@ export function MagicDust() {
     if (!host) return;
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const debug = new URLSearchParams(window.location.search).has("debug");
+    const show = (m: string) => { if (label.current) label.current.textContent = m.slice(0, 160); };
+    const onErr = (e: ErrorEvent) => show("ERR " + e.message);
+    const onRej = (e: PromiseRejectionEvent) => show("REJ " + String(e.reason?.message ?? e.reason));
+    if (debug) {
+      window.addEventListener("error", onErr);
+      window.addEventListener("unhandledrejection", onRej);
+    }
 
     const onDown = (e: PointerEvent) => {
       primeSfx();
@@ -43,7 +50,11 @@ export function MagicDust() {
     };
 
     host.addEventListener("pointerdown", onDown, { passive: true });
-    return () => host.removeEventListener("pointerdown", onDown);
+    return () => {
+      host.removeEventListener("pointerdown", onDown);
+      window.removeEventListener("error", onErr);
+      window.removeEventListener("unhandledrejection", onRej);
+    };
   }, []);
 
   return (

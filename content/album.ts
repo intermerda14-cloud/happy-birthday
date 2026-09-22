@@ -26,17 +26,17 @@ export const album: { spreads: Spread[] } = {
       photos: [
         {
           assetId: "album.photo1",
-          caption: "TODO: caption satu kalimat",
+          caption: "Ini Foto pertama kali kita ketemu dan nonton bioskop",
           alt: "TODO: deskripsi isi foto",
         },
         {
           assetId: "album.photo2",
-          caption: "TODO: caption satu kalimat",
+          caption: "kalau ini foto pertama kali kita menikmati dunia ini yang cuma ada kita berdua hihihi",
           alt: "TODO: deskripsi isi foto",
         },
         {
           assetId: "album.photo3",
-          caption: "TODO: caption satu kalimat",
+          caption: "ini aku lagi bobo, paginya kita mamm bubur barengggg",
           alt: "TODO: deskripsi isi foto",
         },
       ],
@@ -46,7 +46,7 @@ export const album: { spreads: Spread[] } = {
       photos: [
         {
           assetId: "album.photo4",
-          caption: "TODO: caption satu kalimat",
+          caption: "HAHAHAHAHA FOTO INI LUCUUUUU. HAPPY 20th Birthday Ayaaanggggg.....",
           alt: "TODO: deskripsi isi foto",
         },
       ],

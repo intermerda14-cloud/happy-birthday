@@ -12,7 +12,7 @@ function load(): Promise<Holder | null> {
     loading = import("@/components/audio/SoundEngine")
       .then((m) => {
         const mod = m as unknown as Holder;
-        let h = (mod.SoundEngine ?? mod.default ?? mod) as Holder;
+        let h = (mod.sounds ?? mod.SoundEngine ?? mod.default ?? mod) as Holder;
         // Bila fungsi diekspor di level modul, pakai modul itu sendiri.
         if (typeof h["playPageTurn"] !== "function" && typeof mod["playPageTurn"] === "function") h = mod;
         engine = h;

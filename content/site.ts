@@ -13,9 +13,9 @@ export interface Site {
 export const site: Site = {
   recipientName: "TODO: nama panggilan Adelia",
   senderName: "TODO: nama pengirim",
-  birthdayISO: "TODO: YYYY-MM-DD",
-  nextBirthdayISO: undefined,
-  anniversaryISO: undefined,
+  birthdayISO: "2026-09-23",
+  nextBirthdayISO: "2027-09-23",
+  anniversaryISO: "2025-05-18",
   previewKey: "TODO: kunci-untuk-preview",
   unlockHourWIB: 0,
 };

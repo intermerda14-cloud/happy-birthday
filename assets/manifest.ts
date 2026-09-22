@@ -111,10 +111,10 @@ export const assetsManifest: Record<AssetId, AssetSlot> = {
     alt: "TODO: tanda tangan tulisan tangan",
     fallback: { kind: "gradient", from: "#8A2B2B", to: "#6B2B2B", label: "TTD" },
   },
-  "album.photo1": { id: "album.photo1", kind: "image", alt: "TODO: deskripsi foto 1", fallback: { kind: "none" } },
-  "album.photo2": { id: "album.photo2", kind: "image", alt: "TODO: deskripsi foto 2", fallback: { kind: "none" } },
-  "album.photo3": { id: "album.photo3", kind: "image", alt: "TODO: deskripsi foto 3", fallback: { kind: "none" } },
-  "album.photo4": { id: "album.photo4", kind: "image", alt: "TODO: deskripsi foto 4", fallback: { kind: "none" } },
+  "album.photo1": { id: "album.photo1", kind: "image", file: "photos/photo1.webp", alt: "Foto kenangan 1", fallback: { kind: "none" } },
+  "album.photo2": { id: "album.photo2", kind: "image", file: "photos/photo2.webp", alt: "Foto kenangan 2", fallback: { kind: "none" } },
+  "album.photo3": { id: "album.photo3", kind: "image", file: "photos/photo3.webp", alt: "Foto kenangan 3", fallback: { kind: "none" } },
+  "album.photo4": { id: "album.photo4", kind: "image", file: "photos/photo4.webp", alt: "Foto kenangan 4", fallback: { kind: "none" } },
   "album.clip1": { id: "album.clip1", kind: "video", alt: "TODO: deskripsi klip 1", fallback: { kind: "none" } },
   "album.clip2": { id: "album.clip2", kind: "video", alt: "TODO: deskripsi klip 2", fallback: { kind: "none" } },
   "music.turntable": {
@@ -149,7 +149,7 @@ export const assetsManifest: Record<AssetId, AssetSlot> = {
   },
   "sfx.pageTurn": { id: "sfx.pageTurn", kind: "audio", alt: "SUARA: balik halaman", fallback: { kind: "none" } },
   "sfx.blow": { id: "sfx.blow", kind: "audio", alt: "SUARA: tiupan lilin", fallback: { kind: "none" } },
-  "audio.ambient": { id: "audio.ambient", kind: "audio", alt: "MUSIK: latar ambient", fallback: { kind: "none" } },
+  "audio.ambient": { id: "audio.ambient", kind: "audio", file: "audio/latar.mp3", alt: "Musik latar", fallback: { kind: "none" } },
   "audio.voice": { id: "audio.voice", kind: "audio", alt: "MUSIK: voice note", fallback: { kind: "none" } },
 };
 

@@ -1,4 +1,4 @@
-// components/Cover.tsx  (pengganti penuh; props tidak berubah)
+// components/Cover.tsx  (pengganti; sudah memuat perbaikan aria-disabled)
 "use client";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { site } from "@/content/site";
@@ -45,7 +45,8 @@ export function Cover({ isUnlocked, onOpen }: Props) {
   }, []);
 
   const ready = remaining !== null;
-  const locked = ready && !isUnlocked && !preview && (remaining ?? 0) > 0;
+  const forced = process.env.NEXT_PUBLIC_PREVIEW === "1"; // mode preview lokal: tidak terkunci
+  const locked = ready && !isUnlocked && !preview && !forced && (remaining ?? 0) > 0;
 
   const crack = useCallback(() => {
     setPhase("broken");
@@ -101,16 +102,37 @@ export function Cover({ isUnlocked, onOpen }: Props) {
       <div className="lux-cover-shade" aria-hidden="true" />
       <div className="lux-frame" aria-hidden="true">
         <i />
+        <b className="cn cn-a" />
+        <b className="cn cn-b" />
+        <b className="cn cn-c" />
+        <b className="cn cn-d" />
       </div>
 
       <div className="lux-cover-body">
-        <h1 className="foil lux-title">Kisah {name}</h1>
-        <p className="lux-sub">Sebuah dongeng untuk hari ulang tahunmu</p>
+        <svg className="lux-emblem" viewBox="0 0 60 60" aria-hidden="true">
+          <defs>
+            <linearGradient id="lc-gf" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stopColor="#F6DFB0" />
+              <stop offset=".55" stopColor="#C9A25E" />
+              <stop offset="1" stopColor="#8A5A2B" />
+            </linearGradient>
+          </defs>
+          <path d="M38 8A24 24 0 1 0 38 52A19 19 0 1 1 38 8Z" fill="url(#lc-gf)" />
+          <path d="M47 13l1.7 4.2 4.2 1.7-4.2 1.7-1.7 4.2-1.7-4.2-4.2-1.7 4.2-1.7z" fill="#F6DFB0" />
+        </svg>
+
+        <div className="lux-titles">
+          <h1 className="foil lux-title">
+            <span className="lux-title-s">Kisah</span>
+            {name}
+          </h1>
+          <p className="lux-sub">Sebuah dongeng untuk hari ulang tahunmu</p>
+        </div>
 
         <button
           type="button"
           className={`lux-seal ${phase}`}
-          disabled={locked || !ready}
+          aria-disabled={locked || !ready}
           aria-label={locked ? "Segel masih terkunci" : "Tahan untuk memecahkan segel"}
           onPointerDown={startHold}
           onPointerUp={endHold}
@@ -130,20 +152,22 @@ export function Cover({ isUnlocked, onOpen }: Props) {
           </svg>
         </button>
 
-        {locked && (
-          <>
-            <p className="lux-count" aria-label="Hitung mundur">
-              {pad(Math.floor(t / 864e5))} hari &nbsp;{pad(Math.floor(t / 36e5) % 24)} jam &nbsp;{pad(Math.floor(t / 6e4) % 60)} menit &nbsp;{pad(Math.floor(t / 1e3) % 60)} detik
-            </p>
-            <p className="lux-msg">Kisah ini baru bisa dibuka tanggal {dateLabel}, jam 00.00 WIB.</p>
-          </>
-        )}
-        {ready && !locked && phase !== "broken" && <p className="lux-msg">Tahan segelnya untuk membukanya.</p>}
-        {ready && !locked && phase === "broken" && (
-          <button type="button" className="btn lux-open" onClick={open}>
-            Buka buku
-          </button>
-        )}
+        <div className="lux-status">
+          {locked && (
+            <>
+              <p className="lux-count" aria-label="Hitung mundur">
+                {pad(Math.floor(t / 864e5))} hari &nbsp;{pad(Math.floor(t / 36e5) % 24)} jam &nbsp;{pad(Math.floor(t / 6e4) % 60)} menit &nbsp;{pad(Math.floor(t / 1e3) % 60)} detik
+              </p>
+              <p className="lux-msg">Kisah ini baru bisa dibuka tanggal {dateLabel}, jam 00.00 WIB.</p>
+            </>
+          )}
+          {ready && !locked && phase !== "broken" && <p className="lux-msg">Tahan segelnya untuk membukanya.</p>}
+          {ready && !locked && phase === "broken" && (
+            <button type="button" className="btn lux-open" onClick={open}>
+              Buka buku
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

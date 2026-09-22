@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Fraunces, Nunito } from "next/font/google";
 import "./globals.css";
 import "./upgrade.css";
+import "./birthday.css";
 
 const fraunces = Fraunces({
   subsets: ["latin"],

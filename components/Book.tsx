@@ -5,9 +5,9 @@ import { Cover } from "./Cover";
 import { CandleScene } from "./pages/CandleScene";
 import { LetterScene } from "./pages/LetterScene";
 import { AlbumScene } from "./pages/AlbumScene";
-import { TimelineScene } from "./pages/TimelineScene";
+import { CardScene } from "./pages/CardScene";
 import { MusicScene } from "./pages/MusicScene";
-import { CouponsScene } from "./pages/CouponsScene";
+import { OpenWhenScene } from "./pages/OpenWhenScene";
 import { StarsScene } from "./pages/StarsScene";
 import { JarScene } from "./pages/JarScene";
 import { EpilogueScene } from "./pages/EpilogueScene";
@@ -24,7 +24,6 @@ function BookContent() {
   };
 
   const handleOpen = () => {
-    sfx("playWaxCrack");
     sfx("startAmbient");
     dispatch({ type: "OPEN" });
   };
@@ -53,9 +52,9 @@ function BookContent() {
         />
         <LetterScene />
         <AlbumScene />
-        <TimelineScene />
+        <CardScene />
         <MusicScene />
-        <CouponsScene />
+        <OpenWhenScene />
         <StarsScene />
         <JarScene />
         <EpilogueScene />

@@ -1,13 +1,33 @@
 "use client";
+import { getAsset } from "@/assets/manifest";
 
 // Web Audio API sintetis murni (Zero External Assets / No Copyright Issues)
 // Menghasilkan efek suara organik: Tiup lilin, balik kertas, sobek kupon, pecah lilin, dan ambient bed hangat.
+
+// Kotak musik lembut: progresi C - G - Am - F, arpeggio pelan (nada dalam Hz)
+const AMBIENT_PROGRESSION = [
+  { bass: 261.63, notes: [523.25, 659.25, 783.99, 1046.5, 1318.51] },
+  { bass: 196.0, notes: [392.0, 493.88, 587.33, 783.99, 987.77] },
+  { bass: 220.0, notes: [440.0, 523.25, 659.25, 880.0, 1046.5] },
+  { bass: 174.61, notes: [349.23, 440.0, 523.25, 698.46, 880.0] },
+];
+const AMBIENT_PATTERN = [0, 1, 2, 3, 4, 3, 2, 1];
+const AMBIENT_STEP = 0.44; // detik per not (sekitar 68 bpm)
+
+const AMBIENT_FILE_VOLUME = 0.3; // volume musik latar dari file sendiri (0 sampai 1)
 
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private ambientGain: GainNode | null = null;
   private isAmbientPlaying = false;
   private enabled = true;
+  private ducked = false;
+  private ambientEl: HTMLAudioElement | null = null;
+  private fadeTimer: ReturnType<typeof setInterval> | null = null;
+  private ambientTimer: ReturnType<typeof setInterval> | null = null;
+  private ambientSend: GainNode | null = null;
+  private nextNote = 0;
+  private step = 0;
 
   private initCtx() {
     if (!this.ctx && typeof window !== "undefined") {
@@ -21,13 +41,49 @@ class SoundEngine {
     }
   }
 
+  // Musik latar dari file sendiri: isi slot audio.ambient di assets/manifest.ts
+  private customAmbientSrc(): string | null {
+    const f = getAsset("audio.ambient")?.file;
+    if (!f) return null;
+    return f.startsWith("/") || f.startsWith("http") ? f : `/media/${f}`;
+  }
+
+  private startCustomAmbient(src: string) {
+    const el = new Audio(src);
+    el.loop = true;
+    el.volume = 0;
+    this.ambientEl = el;
+    this.isAmbientPlaying = true;
+    if (this.enabled && !this.ducked) this.fadeEl(AMBIENT_FILE_VOLUME);
+  }
+
+  private fadeEl(target: number) {
+    const el = this.ambientEl;
+    if (!el) return;
+    if (this.fadeTimer) clearInterval(this.fadeTimer);
+    if (target > 0 && el.paused) el.play().catch(() => {});
+    this.fadeTimer = setInterval(() => {
+      const d = target - el.volume;
+      if (Math.abs(d) <= 0.03) {
+        el.volume = target;
+        if (this.fadeTimer) clearInterval(this.fadeTimer);
+        this.fadeTimer = null;
+        if (target === 0) el.pause();
+        return;
+      }
+      el.volume = Math.max(0, Math.min(1, el.volume + Math.sign(d) * 0.03));
+    }, 50);
+  }
+
+  private applyAmbient() {
+    const on = this.enabled && !this.ducked;
+    if (this.ambientEl) this.fadeEl(on ? AMBIENT_FILE_VOLUME : 0);
+    if (this.ambientGain && this.ctx) this.ambientGain.gain.setTargetAtTime(on ? 0.05 : 0, this.ctx.currentTime, 0.4);
+  }
+
   public setEnabled(val: boolean) {
     this.enabled = val;
-    if (!val && this.ambientGain) {
-      this.ambientGain.gain.setTargetAtTime(0, this.ctx?.currentTime || 0, 0.2);
-    } else if (val && this.isAmbientPlaying && this.ambientGain) {
-      this.ambientGain.gain.setTargetAtTime(0.08, this.ctx?.currentTime || 0, 0.5);
-    }
+    this.applyAmbient();
   }
 
   public getEnabled() {
@@ -191,47 +247,106 @@ class SoundEngine {
     });
   }
 
-  // Ambient Bed Hangat (Harmonik Lembut Menenangkan)
+  // Ambient: kotak musik lembut (sintesis murni, tanpa file audio)
   public startAmbient() {
     if (this.isAmbientPlaying) return;
+    const custom = this.customAmbientSrc();
+    if (custom) {
+      this.startCustomAmbient(custom);
+      return;
+    }
     this.initCtx();
     if (!this.ctx) return;
 
+    const ctx = this.ctx;
     this.isAmbientPlaying = true;
-    const t = this.ctx.currentTime;
+    const t = ctx.currentTime;
 
-    const chords = [220, 277.18, 329.63, 440]; // A major 7th chord yang hangat
-    this.ambientGain = this.ctx.createGain();
+    this.ambientGain = ctx.createGain();
     this.ambientGain.gain.setValueAtTime(0, t);
     this.ambientGain.gain.linearRampToValueAtTime(this.enabled ? 0.05 : 0, t + 3);
+    this.ambientGain.connect(ctx.destination);
 
-    chords.forEach((freq) => {
-      if (!this.ctx || !this.ambientGain) return;
-      const osc = this.ctx.createOscillator();
-      osc.type = "sine";
-      osc.frequency.setValueAtTime(freq, t);
+    // Gema lembut supaya nada terdengar berongga seperti di ruangan
+    const delay = ctx.createDelay(1.0);
+    delay.delayTime.value = 0.42;
+    const feedback = ctx.createGain();
+    feedback.gain.value = 0.36;
+    const tone = ctx.createBiquadFilter();
+    tone.type = "lowpass";
+    tone.frequency.value = 2600;
+    delay.connect(tone);
+    tone.connect(feedback);
+    feedback.connect(delay);
+    tone.connect(this.ambientGain);
+    this.ambientSend = ctx.createGain();
+    this.ambientSend.gain.value = 0.55;
+    this.ambientSend.connect(delay);
 
-      // LFO lembut untuk efek bernapas (breathe)
-      const lfo = this.ctx.createOscillator();
-      const lfoGain = this.ctx.createGain();
-      lfo.frequency.setValueAtTime(0.15 + Math.random() * 0.1, t);
-      lfoGain.gain.setValueAtTime(freq * 0.015, t);
-      lfo.connect(lfoGain);
-      lfoGain.connect(osc.frequency);
-      lfo.start(t);
+    this.nextNote = t + 0.4;
+    this.step = 0;
+    this.ambientTimer = setInterval(() => this.tickAmbient(), 120);
+  }
 
-      osc.connect(this.ambientGain);
-      osc.start(t);
-    });
+  private tickAmbient() {
+    const ctx = this.ctx;
+    if (!ctx) return;
+    if (!this.enabled || this.ducked) {
+      this.nextNote = Math.max(this.nextNote, ctx.currentTime + 0.1);
+      return;
+    }
+    while (this.nextNote < ctx.currentTime + 0.6) {
+      this.scheduleStep(this.nextNote, this.step);
+      this.nextNote += AMBIENT_STEP;
+      this.step += 1;
+    }
+  }
 
-    this.ambientGain.connect(this.ctx.destination);
+  private scheduleStep(when: number, step: number) {
+    const chord = AMBIENT_PROGRESSION[Math.floor(step / 8) % AMBIENT_PROGRESSION.length];
+    const pos = step % 8;
+    if (pos === 0) this.bell(chord.bass, when, 0.9, 3.2);
+    if (pos !== 0 && Math.random() < 0.14) return; // jeda tipis supaya terasa manusiawi
+    const jitter = (Math.random() - 0.5) * 0.02;
+    this.bell(chord.notes[AMBIENT_PATTERN[pos]], when + jitter, 0.75 + Math.random() * 0.5, 2.2);
+  }
+
+  // Satu nada kotak musik: sinus + partial logam tipis, meluruh cepat
+  private bell(freq: number, when: number, vel: number, dur: number) {
+    const ctx = this.ctx;
+    if (!ctx || !this.ambientGain) return;
+    const g = ctx.createGain();
+    g.gain.setValueAtTime(0.0001, when);
+    g.gain.exponentialRampToValueAtTime(vel, when + 0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, when + dur);
+
+    const o1 = ctx.createOscillator();
+    o1.type = "sine";
+    o1.frequency.setValueAtTime(freq, when);
+    o1.connect(g);
+
+    const o2 = ctx.createOscillator();
+    o2.type = "sine";
+    o2.frequency.setValueAtTime(freq * 2.756, when);
+    const g2 = ctx.createGain();
+    g2.gain.setValueAtTime(0.16, when);
+    g2.gain.exponentialRampToValueAtTime(0.0001, when + 0.5);
+    o2.connect(g2);
+    g2.connect(g);
+
+    g.connect(this.ambientGain);
+    if (this.ambientSend) g.connect(this.ambientSend);
+
+    o1.start(when);
+    o2.start(when);
+    o1.stop(when + dur + 0.1);
+    o2.stop(when + 0.6);
   }
 
   // Ducking saat Spotify/Lagu berputar
   public duckAmbient(duck: boolean) {
-    if (!this.ambientGain || !this.ctx) return;
-    const target = duck ? 0 : this.enabled ? 0.05 : 0;
-    this.ambientGain.gain.setTargetAtTime(target, this.ctx.currentTime, 0.4);
+    this.ducked = duck;
+    this.applyAmbient();
   }
 }
 

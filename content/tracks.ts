@@ -1,29 +1,28 @@
 export interface Track {
-  spotifyUri: string; // mis. "spotify:track:08mG3Y1vljYA6bvDt4Wqkj"
+  spotifyUri: string;
   title: string;
   artist: string;
-  note: string; // catatan pribadi: kenapa lagu ini
-  date?: string; // "YYYY-MM-DD" opsional
+  note: string;
+  date?: string;
 }
 
 export const tracks: Track[] = [
   {
-    spotifyUri: "TODO: spotify:track:… (URI lagu 1)",
-    title: "TODO: judul lagu 1",
-    artist: "TODO: artis lagu 1",
-    note: "TODO: kenapa lagu ini — sekalimat",
-    date: "TODO: YYYY-MM-DD",
+    spotifyUri: "spotify:track:4ecdsGz3Hg6TKPwQ0ZOdJz",
+    title: "Fashion",
+    artist: "Martin Cortis",
+    note: "Lagu ini selalu mengingatkanku padamu, aku sering denger lagu ini ketika lagi bareng hehehe.",
   },
   {
-    spotifyUri: "TODO: spotify:track:… (URI lagu 2)",
-    title: "TODO: judul lagu 2",
-    artist: "TODO: artis lagu 2",
-    note: "TODO: kenapa lagu ini — sekalimat",
+    spotifyUri: "spotify:track:0NGFAcYQVHCIdQea2qSs1I",
+    title: "Lemon Tang",
+    artist: "H2H",
+    note: "Kalau lagu ini bikin aku inget pas kamu main ke bogor dan liat ekspresi seneng kamu :)))",
   },
   {
-    spotifyUri: "TODO: spotify:track:… (URI lagu 3)",
-    title: "TODO: judul lagu 3",
-    artist: "TODO: artis lagu 3",
-    note: "TODO: kenapa lagu ini — sekalimat",
+    spotifyUri: "spotify:track:7gs9RkSDLE4pnqzc3H1hjc",
+    title: "Separuhku",
+    artist: "Nano",
+    note: "lagu ini random ke-setel pas aku pulang dari tangerang pertama kali dan sampe sekarang aku masih suka denger lagu ini karna berkesan mwehehe",
   },
 ];
