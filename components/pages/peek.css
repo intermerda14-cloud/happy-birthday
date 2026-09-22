@@ -87,6 +87,7 @@
 /* ---------- Panggung foto: bingkai berlapis + ornamen ---------- */
 .pk-stage {
   position: relative;
+  z-index: 5;
   width: 100%;
   max-width: 300px;
   padding: 14px;
@@ -96,6 +97,54 @@
     0 1px 2px rgba(58, 29, 63, 0.25),
     0 22px 48px -12px rgba(58, 29, 63, 0.55),
     inset 0 0 0 1px rgba(185, 139, 74, 0.5);
+}
+
+/* ---------- Ambient permanen: balon & confetti mengambang di belakang bingkai ---------- */
+.pk-ambient {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pk-ambient-balloon {
+  position: absolute;
+  border-radius: 50% 50% 50% 50% / 58% 58% 42% 42%;
+  opacity: 0.8;
+  box-shadow: inset -5px -5px 8px rgba(0, 0, 0, 0.15), inset 3px 5px 6px rgba(255, 255, 255, 0.3);
+  animation: pk-ambient-float 6.5s ease-in-out infinite;
+}
+.pk-ambient-balloon::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -18px;
+  width: 1px;
+  height: 18px;
+  background: rgba(90, 60, 40, 0.35);
+}
+@keyframes pk-ambient-float {
+  0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+  25% { transform: translateY(-14px) translateX(6px) rotate(3deg); }
+  50% { transform: translateY(4px) translateX(-4px) rotate(-2deg); }
+  75% { transform: translateY(-8px) translateX(3px) rotate(2deg); }
+}
+
+.pk-ambient-confetti {
+  position: absolute;
+  width: 7px;
+  height: 12px;
+  opacity: 0.75;
+  animation: pk-ambient-drift 5.5s ease-in-out infinite;
+}
+@keyframes pk-ambient-drift {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-16px) rotate(180deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pk-ambient-balloon, .pk-ambient-confetti { animation: none; }
 }
 
 .pk-tape {

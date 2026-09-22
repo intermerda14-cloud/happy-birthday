@@ -20,6 +20,23 @@ const BALLOON_COLORS = ["#D9A0B0", "#C9A25E", "#8A4F7A", "#E9CFA0", "#5A2C66", "
 const BALLOONS = Array.from({ length: 10 }, (_, i) => i);
 const CONFETTI = Array.from({ length: 16 }, (_, i) => i);
 
+// Ambient permanen: mengambang pelan terus-menerus di belakang bingkai foto (tidak pernah hilang).
+const AMBIENT_BALLOONS = [
+  { top: "8%", left: "4%", size: 26, delay: "0s" },
+  { top: "68%", left: "2%", size: 20, delay: "1.4s" },
+  { top: "14%", left: "84%", size: 22, delay: "0.7s" },
+  { top: "72%", left: "88%", size: 28, delay: "2.1s" },
+  { top: "42%", left: "-2%", size: 18, delay: "3s" },
+];
+const AMBIENT_CONFETTI = [
+  { top: "10%", left: "12%", delay: "0s" },
+  { top: "30%", left: "90%", delay: "1.1s" },
+  { top: "55%", left: "6%", delay: "2.2s" },
+  { top: "80%", left: "92%", delay: "0.5s" },
+  { top: "20%", left: "50%", delay: "1.8s" },
+  { top: "88%", left: "40%", delay: "2.8s" },
+];
+
 const DOR_SRC = "/media/audio/dor.mp3";
 
 export function PeekScene() {
@@ -81,6 +98,35 @@ export function PeekScene() {
       )}
 
       <div className="pk-wrap">
+        <div className="pk-ambient" aria-hidden="true">
+          {AMBIENT_BALLOONS.map((b, i) => (
+            <span
+              key={`ab${i}`}
+              className="pk-ambient-balloon"
+              style={{
+                top: b.top,
+                left: b.left,
+                width: b.size,
+                height: b.size * 1.2,
+                background: BALLOON_COLORS[i % BALLOON_COLORS.length],
+                animationDelay: b.delay,
+              }}
+            />
+          ))}
+          {AMBIENT_CONFETTI.map((c, i) => (
+            <span
+              key={`ac${i}`}
+              className="pk-ambient-confetti"
+              style={{
+                top: c.top,
+                left: c.left,
+                background: BALLOON_COLORS[(i + 2) % BALLOON_COLORS.length],
+                animationDelay: c.delay,
+              }}
+            />
+          ))}
+        </div>
+
         <span className="pk-eyebrow" aria-hidden="true">
           &#x2727; &#x2727; &#x2727;
         </span>
