@@ -57,6 +57,7 @@ export function MusicScene() {
   const [wrapRef, active] = usePageActive<HTMLDivElement>();
   const mountRef = useRef<HTMLDivElement | null>(null);
   const controllerRef = useRef<SpotifyEmbedController | null>(null);
+  const initializedRef = useRef(false);
 
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [controllerReady, setControllerReady] = useState(false);
@@ -70,7 +71,7 @@ export function MusicScene() {
   const current = cleanTracks[selectedIdx] || cleanTracks[0];
 
   useEffect(() => {
-    if (!active) return;
+    if (!active || initializedRef.current) return;
     let cancelled = false;
 
     loadSpotifyIframeApi().then((IFrameAPI) => {
@@ -80,6 +81,11 @@ export function MusicScene() {
         { uri: cleanTracks[0]?.uri || "", width: "100%", height: "80" },
         (controller) => {
           if (cancelled) return;
+          // Baru ditandai "initialized" setelah controller BENAR-BENAR berhasil dibuat --
+          // supaya kalau attempt pertama batal di tengah jalan (misal "active" sempat balik
+          // false sesaat sebelum controller kelar dibuat, saat transisi halaman), effect
+          // berikutnya masih bisa coba lagi, bukan macet permanen selamanya.
+          initializedRef.current = true;
           controllerRef.current = controller;
           setControllerReady(true);
 
@@ -91,14 +97,25 @@ export function MusicScene() {
       );
     });
 
+    // Catatan (patch): controller SENGAJA tidak di-destroy() saat "active" berubah jadi
+    // false (pindah halaman). Destroy+recreate berulang saat toggle cepat terbukti memicu
+    // race condition di script internal Spotify sendiri (insertBefore NotFoundError) karena
+    // destroy() bisa kepanggil di tengah proses internal iframe yang belum selesai. Controller
+    // cuma dibuat SEKALI (guard initializedRef) dan cuma di-destroy saat MusicScene benar-benar
+    // unmount (lihat effect terpisah di bawah).
     return () => {
       cancelled = true;
-      controllerRef.current?.destroy();
-      controllerRef.current = null;
-      setControllerReady(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [active]);
+
+  // Destroy controller hanya sekali, saat MusicScene benar-benar unmount dari DOM.
+  useEffect(() => {
+    return () => {
+      controllerRef.current?.destroy();
+      controllerRef.current = null;
+    };
+  }, []);
 
   // Duck ambient sepenuhnya berbasis halaman aktif: masuk Bab V -> ambient redup,
   // pindah halaman -> ambient balik normal. Reliable karena tidak bergantung pada
