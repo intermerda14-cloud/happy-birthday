@@ -289,6 +289,92 @@ class SoundEngine {
     });
   }
 
+  // SFX 6: Letusan Party Popper "DOR" (Noise Burst + Bass Thump)
+  public playPartyPop() {
+    if (!this.enabled) return;
+    this.initCtx();
+    if (!this.ctx) return;
+
+    const t = this.ctx.currentTime;
+
+    const thump = this.ctx.createOscillator();
+    thump.type = "sine";
+    thump.frequency.setValueAtTime(150, t);
+    thump.frequency.exponentialRampToValueAtTime(40, t + 0.09);
+    const thumpGain = this.ctx.createGain();
+    thumpGain.gain.setValueAtTime(0.55, t);
+    thumpGain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+    thump.connect(thumpGain);
+    thumpGain.connect(this.ctx.destination);
+    thump.start(t);
+    thump.stop(t + 0.14);
+
+    const dur = 0.22;
+    const bufferSize = this.ctx.sampleRate * dur;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      const progress = i / bufferSize;
+      const env = Math.pow(1 - progress, 2.2);
+      data[i] = (Math.random() * 2 - 1) * env;
+    }
+    const noise = this.ctx.createBufferSource();
+    noise.buffer = buffer;
+
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(2200, t);
+    filter.Q.value = 0.7;
+
+    const noiseGain = this.ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.5, t);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, t + dur);
+
+    noise.connect(filter);
+    filter.connect(noiseGain);
+    noiseGain.connect(this.ctx.destination);
+    noise.start(t);
+
+    const sparkleFreqs = [1800, 2400, 3100];
+    sparkleFreqs.forEach((f, idx) => {
+      if (!this.ctx) return;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(f, t + 0.05 + idx * 0.03);
+      gain.gain.setValueAtTime(0, t + 0.05 + idx * 0.03);
+      gain.gain.linearRampToValueAtTime(0.1, t + 0.06 + idx * 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.4 + idx * 0.03);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t + 0.05 + idx * 0.03);
+      osc.stop(t + 0.4 + idx * 0.03);
+    });
+  }
+
+  private fileCache: Map<string, HTMLAudioElement> = new Map();
+
+  // Preload file SFX supaya saat playFile() dipanggil, tidak ada delay fetch/decode.
+  public preloadFile(src: string) {
+    if (this.fileCache.has(src)) return;
+    const el = new Audio(src);
+    el.preload = "auto";
+    el.load();
+    this.fileCache.set(src, el);
+  }
+
+  // SFX dari file MP3, opsional mulai dari offset tertentu (detik).
+  // Pakai elemen ter-preload jika ada, agar playback instan tanpa jeda buffering.
+  public playFile(src: string, startAt = 0) {
+    if (!this.enabled) return;
+    const cached = this.fileCache.get(src);
+    const el = cached ? cached : new Audio(src);
+    if (!cached) el.preload = "auto";
+    el.currentTime = startAt;
+    el.volume = 1;
+    el.play().catch(() => {});
+  }
+
   // Ambient: kotak musik lembut (sintesis murni, tanpa file audio)
   public startAmbient() {
     if (this.isAmbientPlaying) return;

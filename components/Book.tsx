@@ -6,6 +6,7 @@ import { CandleScene } from "./pages/CandleScene";
 import { LetterScene } from "./pages/LetterScene";
 import { AlbumScene } from "./pages/AlbumScene";
 import { CardScene } from "./pages/CardScene";
+import { PeekScene } from "./pages/PeekScene";
 import { MusicScene } from "./pages/MusicScene";
 import { OpenWhenScene } from "./pages/OpenWhenScene";
 import { StarsScene } from "./pages/StarsScene";
@@ -56,6 +57,7 @@ function BookContent() {
         />
         <LetterScene />
         <AlbumScene />
+        <PeekScene />
         <CardScene />
         <MusicScene />
         <OpenWhenScene />

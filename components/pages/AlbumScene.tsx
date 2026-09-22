@@ -40,7 +40,6 @@ export function AlbumScene() {
 
   const spreads = album.spreads ?? [];
   const scrap = (spreads.find((s) => s.layout === "scrapbook") ?? spreads[0])?.photos.map(toItem) ?? [];
-  const full = spreads.find((s) => s.layout === "fullbleed")?.photos.map((p, i) => toItem(p, i + 3)) ?? [];
   const title = (spreads.find((s) => s.layout === "scrapbook") ?? spreads[0])?.title;
 
   // Ketuk pertama "mencetak" foto, ketuk kedua memperbesar.
@@ -74,14 +73,6 @@ export function AlbumScene() {
           ))}
         </div>
 
-        {full.map((it) => (
-          <button key={it.key} type="button" className="al-feature" onClick={() => setBox(it)} aria-label={`Perbesar foto: ${it.caption}`}>
-            <span className="al-kb" style={{ background: it.grad }}>
-              {it.src && <img src={it.src} alt={it.alt} loading="lazy" draggable={false} onError={hideBroken} />}
-            </span>
-            <span className="al-feature-cap">{it.caption}</span>
-          </button>
-        ))}
       </div>
 
       {box && (

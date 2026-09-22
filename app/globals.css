@@ -65,7 +65,7 @@ button {
 /* Kertas Perkamen Vintage */
 .paper {
   width: 100%;
-  height: 100%;
+  min-height: 100%;
   background:
     radial-gradient(42% 30% at 10% 8%, rgba(217, 160, 176, 0.35), transparent 70%),
     radial-gradient(40% 30% at 94% 94%, rgba(201, 230, 216, 0.55), transparent 70%),

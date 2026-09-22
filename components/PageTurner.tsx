@@ -189,7 +189,7 @@ export function PageTurner({ children, index, onChange, canAdvance, textured = (
               style={{
                 zIndex: total - i,
                 visibility: Math.abs(i - index) > 1 ? "hidden" : "visible",
-                contentVisibility: i === 5 ? "visible" : Math.abs(i - index) > 1 ? "hidden" : "visible",
+                contentVisibility: i === 6 ? "visible" : Math.abs(i - index) > 1 ? "hidden" : "visible", // index 6 = MusicScene (geser dari 5 karena PeekScene disisipkan)
               }}
               aria-hidden={i !== index}
             >
