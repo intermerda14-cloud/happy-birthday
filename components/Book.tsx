@@ -19,6 +19,10 @@ function BookContent() {
 
   // Gate navigasi lilin: Bab 2 ke atas hanya bisa dibuka jika lilin sudah ditiup
   const canAdvance = (pageIdx: number) => {
+    if (pageIdx === 0) {
+      const forced = process.env.NEXT_PUBLIC_PREVIEW === "1";
+      return state.isUnlocked || forced;
+    }
     if (pageIdx === 1) return state.candleBlown;
     return true;
   };
