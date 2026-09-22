@@ -141,9 +141,9 @@ html, body { overscroll-behavior: none; -webkit-tap-highlight-color: transparent
 .lux-candle.out .lux-lean { transform: rotate(26deg) scale(0); opacity: 0; transition: transform .5s ease-in, opacity .4s; }
 .lux-fl { transform-origin: 70px 126px; animation: lux-flick 2.2s ease-in-out infinite; }
 @keyframes lux-flick { 0%, 100% { transform: scale(1, 1); } 30% { transform: scale(.96, 1.05) rotate(-1.4deg); } 60% { transform: scale(1.03, .97) rotate(1.1deg); } }
-.lux-smoke { fill: none; stroke: rgba(230,215,200,.75); stroke-width: 1.6; stroke-linecap: round; stroke-dasharray: 110; stroke-dashoffset: 110; opacity: 0; filter: blur(1px); }
+.lux-smoke { fill: none; stroke: rgba(230,215,200,.75); stroke-width: 1.6; stroke-linecap: round; opacity: 0; filter: blur(1px); }
 .lux-candle.out .lux-smoke { animation: lux-smoke 2.6s ease-out both; }
-@keyframes lux-smoke { 0% { stroke-dashoffset: 110; opacity: 0; } 20% { opacity: .7; } 100% { stroke-dashoffset: 0; opacity: 0; transform: translateY(-16px); } }
+@keyframes lux-smoke { 0% { opacity: 0; transform: translateY(6px); } 20% { opacity: .7; } 100% { opacity: 0; transform: translateY(-16px); } }
 .lux-sparks { position: absolute; inset: 0; pointer-events: none; }
 .lux-sp { position: absolute; font-style: normal; color: #c9a25e; opacity: 0; }
 .lux-candle.out .lux-sp { animation: lux-pop 1.8s ease-out both; }

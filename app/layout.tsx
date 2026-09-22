@@ -3,6 +3,7 @@ import { Fraunces, Nunito } from "next/font/google";
 import "./globals.css";
 import "./upgrade.css";
 import "./birthday.css";
+import "./android-glitch-fix.css";
 
 const fraunces = Fraunces({
   subsets: ["latin"],

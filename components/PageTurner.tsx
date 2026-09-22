@@ -186,7 +186,7 @@ export function PageTurner({ children, index, onChange, canAdvance, textured = (
                 pages.current[i] = el;
               }}
               className={`bk-page ${state}`}
-              style={{ zIndex: total - i, visibility: Math.abs(i - index) > 2 ? "hidden" : "visible" }}
+              style={{ zIndex: total - i, visibility: Math.abs(i - index) > 1 ? "hidden" : "visible", contentVisibility: Math.abs(i - index) > 1 ? "hidden" : "visible" }}
               aria-hidden={i !== index}
             >
               <div className="bk-inner">{child}</div>

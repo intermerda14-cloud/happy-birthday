@@ -1,0 +1,30 @@
+/* app/android-glitch-fix.css
+   Percobaan #10: matikan flip 3D (rotateY) pada FASE COMMIT halaman (setelah jari
+   dilepas), ganti jadi crossfade opacity biasa -- khusus layar sentuh. Ini TIDAK
+   menyentuh gerakan drag-mengikuti-jari saat masih menggeser (itu dikendalikan
+   lewat inline style JS di PageTurner.tsx dan baru dibersihkan setelah commit,
+   jadi override berbasis kelas .turned di bawah ini otomatis tidak berlaku
+   selama drag aktif). Percobaan #1 (color instan) dan #2 (filter mati) tetap
+   dipertahankan karena tidak merugikan, walau belum terbukti cukup sendirian.
+
+   Alasan: transformasi 3D (perspective + rotateY) pada halaman berisi banyak
+   elemen SVG (lilin, api, asap, percikan, bokeh) memaksa browser menghitung
+   ulang dan mengompositori seluruh layer kompleks itu tiap frame selama flip
+   berlangsung, BERSAMAAN dengan animasi dekoratif lain yang masih jalan sejak
+   lilin ditiup (asap, percikan, kabut). Menghapus transformasi 3D pada momen
+   ini memutus salah satu sumber beban yang saling menumpuk tsb. */
+
+@media (hover: none), (pointer: coarse) {
+  .lux-fl {
+    filter: none !important;
+  }
+  .lux-candle {
+    transition-duration: 0s !important;
+  }
+
+  .bk-page.turned {
+    transform: none !important;
+    opacity: 0 !important;
+    transition: opacity 1.1s var(--ease-page) !important;
+  }
+}

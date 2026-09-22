@@ -1,11 +1,10 @@
 "use client";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { tracks } from "@/content/tracks";
 import { sounds } from "@/components/audio/SoundEngine";
 import { VineCorners } from "@/components/ui/VineCorners";
 import { usePageActive } from "@/hooks/usePageActive";
 
-const FADE_MS = 150;
 const ICON_PLAY = "\u25B6";
 const ICON_PAUSE = "\u23F8\u23F8";
 const ICON_NOTE = "\u266A";
@@ -14,11 +13,7 @@ export function MusicScene() {
   const [wrapRef, active] = usePageActive<HTMLDivElement>();
   const [selectedIdx, setSelectedIdx] = useState(0);
   const [playing, setPlaying] = useState(false);
-  const [pending, setPending] = useState(false);
   const [iframeReady, setIframeReady] = useState(false);
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const playingRef = useRef(false);
-  playingRef.current = playing;
 
   const cleanTracks = tracks.map((t) => ({
     title: t.title.replace(/^TODO:\s*/, ""),
@@ -37,48 +32,28 @@ export function MusicScene() {
     setIframeReady(false);
   }, [embedSrc]);
 
-  const clearTimer = () => {
-    if (timer.current) {
-      clearTimeout(timer.current);
-      timer.current = null;
-    }
+  const play = (idx?: number) => {
+    if (typeof idx === "number") setSelectedIdx(idx);
+    setPlaying(true);
+    sounds.duckAmbient(true);
   };
 
   const stop = () => {
-    clearTimer();
-    setPending(false);
-    if (playingRef.current) {
-      setPlaying(false);
-      sounds.duckAmbient(false);
-    }
-  };
-
-  const requestPlay = (idx?: number) => {
-    if (typeof idx === "number" && idx === selectedIdx && playing) return;
-    clearTimer();
-    setPending(true);
-    sounds.duckAmbient(true);
-    timer.current = setTimeout(() => {
-      if (typeof idx === "number") setSelectedIdx(idx);
-      setPlaying(true);
-      setPending(false);
-      timer.current = null;
-    }, FADE_MS);
+    setPlaying(false);
+    sounds.duckAmbient(false);
   };
 
   const toggleDisc = () => {
-    if (pending) return;
     if (playing) stop();
-    else requestPlay();
+    else play();
   };
 
   const pickTrack = (idx: number) => {
-    if (pending) return;
     if (idx === selectedIdx && playing) {
       stop();
       return;
     }
-    requestPlay(idx);
+    play(idx);
   };
 
   useEffect(() => {
@@ -88,15 +63,15 @@ export function MusicScene() {
 
   useEffect(
     () => () => {
-      clearTimer();
-      if (playingRef.current) sounds.duckAmbient(false);
+      if (playing) sounds.duckAmbient(false);
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [],
   );
 
   const showPlayer = playing && iframeReady;
   const showLoading = playing && !iframeReady;
-  const statusText = pending ? "Menyiapkan..." : playing ? ICON_NOTE + " Melodi berputar... (Audio latar diredupkan)" : "Ketuk piringan hitam atau putar lagu di Spotify";
+  const statusText = playing ? ICON_NOTE + " Melodi berputar... (Audio latar diredupkan)" : "Ketuk piringan hitam atau putar lagu di Spotify";
 
   return (
     <>
@@ -151,7 +126,6 @@ export function MusicScene() {
               type="button"
               onClick={toggleDisc}
               aria-label={playing ? "Jeda lagu" : "Putar lagu"}
-              aria-disabled={pending}
               style={{
                 width: "135px",
                 height: "135px",
@@ -241,7 +215,6 @@ export function MusicScene() {
                 key={i}
                 type="button"
                 onClick={() => pickTrack(i)}
-                aria-disabled={pending}
                 style={{
                   padding: "0.3rem 0.75rem",
                   borderRadius: "14px",
