@@ -20,6 +20,10 @@ const LIMITS = {
   audio: 60,
 };
 
+// Batas TOTAL seluruh isi public/media (foto + audio + video digabung).
+// Beda dari LIMITS di atas, yang seharusnya per-file, bukan per-total.
+const TOTAL_LIMIT_KB = 8000;
+
 async function main() {
   // Manifest
   const manifestText = await fs.readFile(path.join(root, "assets", "manifest.ts"), "utf8");
@@ -53,9 +57,9 @@ async function main() {
     measuredTotal += stat.size;
   }
 
-  const limitBytes = LIMITS.image * 1024;
+  const limitBytes = TOTAL_LIMIT_KB * 1024;
   if (measuredTotal > limitBytes) {
-    over.push(`total media ${(measuredTotal / 1024).toFixed(0)} KB > ${LIMITS.image} KB`);
+    over.push(`total media ${(measuredTotal / 1024).toFixed(0)} KB > ${TOTAL_LIMIT_KB} KB`);
   }
 
   if (over.length) {
